@@ -1,0 +1,11 @@
+{
+  "webSever": {
+    "httpsListenPort": "8080"
+  },
+  "mysqlDb": {
+    "username": "course_de",
+    "password": "course123",
+    "host":"43.139.40.48:3306",
+    "dbName":"course_design"
+  }
+}
