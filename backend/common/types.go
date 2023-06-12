@@ -16,6 +16,6 @@ type UserInfo struct {
 
 // Wordbook 语料信息
 type Wordbook struct {
-	gorm.Model
+	ID   uint   `json:"id" gorm:"primarykey"`
 	Word string `json:"word"`
 }
