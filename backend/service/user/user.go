@@ -226,11 +226,19 @@ func GetUserInfo(c *gin.Context) {
 	}
 
 	resp := struct {
-		UserId   int64  `json:"userId,omitempty"`
-		Username string `json:"username,omitempty"`
+		UserId    int64  `json:"userId,omitempty"`
+		Username  string `json:"username,omitempty"`
+		Account   string `json:"account,omitempty"`
+		Password  string `json:"password,omitempty"`
+		FourGrade string `json:"fourGrade,omitempty"`
+		SixGrade  string `json:"sixGrade,omitempty"`
 	}{
-		UserId:   userID.(int64),
-		Username: user.Username,
+		UserId:    userID.(int64),
+		Username:  user.Username,
+		Account:   user.Account,
+		Password:  user.Password,
+		FourGrade: user.FourGrade,
+		SixGrade:  user.SixGrade,
 	}
 
 	response.Success(c, resp)
