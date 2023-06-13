@@ -4,6 +4,7 @@ import (
 	"backend/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"math"
 	"math/rand"
 	"net/http"
 	"sort"
@@ -108,33 +109,112 @@ func JudgeUserWordLevel(c *gin.Context) {
 		response.Err(c, http.StatusOK, msg, nil)
 		return
 	}
+	if len(reqForm.WordList) < 3 {
+		msg = "参数太少，请求不合法"
+		z.Error(fmt.Sprintf("%s:%s,请求的参数太少啦:%+v", msg, err, reqForm))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
 
 	// 设置抽样参数
-	// 从多少个单词抽
-	totalWords := 10000
-	// 分几层
-	numLayers := 10
-	// 抽出来多少个
-	sampleSize := 40
+	numLayers := 6
+	totalWords := reqForm.WordList[len(reqForm.WordList)-1].Id
+
 	// 定义层次权重，采用指数衰减的方式
-	weights := []float64{1.0, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05, 0.03, 0.02, 0.01}
+	weights := []float64{1.0, 0.8, 0.6, 0.4, 0.2, 0.1}
+	totalWeight := 0.0
+	for i := 0; i < numLayers; i++ {
+		totalWeight += weights[i]
+	}
+
 	// 定义层次的得分权重
-	knownWeights := []float64{0.1, 0.15, 0.15, 0.25, 0.25, 0.3, 0.3, 0.3, 0.35, 0.35}
+	knownWeights := []float64{1.0, 1.3, 1.6, 1.9, 2.2, 2.5}
 	totalKnownWeights := 0.0
 	for i := 0; i < numLayers; i++ {
 		totalKnownWeights += knownWeights[i]
 	}
 
+	// 定义层次系数
+	//levelCoefficient := []float64{0.95, 0.8, 0.85, 0.8, 0.75, 0.7}
+
+	// 计算每个层次的分界线 = 划分层级
+	boundaries := make([]int, numLayers+1)
+	boundaries[0] = 1
+	for i := 1; i <= numLayers; i++ {
+		boundary := int(math.Round(float64(totalWords) * (weights[i-1] / totalWeight)))
+		boundaries[i] = boundaries[i-1] + boundary
+	}
+
+	knownPers := make([]float64, numLayers)
+	totalPer := 0.0
+	curId := 0
+	length := len(reqForm.WordList)
+
+	for i := 0; i < numLayers; i++ {
+		tmp := curId
+		knownCount := 0
+		layerBoundaryStart := boundaries[i]
+		layerBoundaryEnd := boundaries[i+1]
+
+		for ; curId < length && reqForm.WordList[curId].Id < layerBoundaryEnd; curId++ {
+			if reqForm.WordList[curId].Id > layerBoundaryStart && reqForm.WordList[curId].Known == 1 {
+				knownCount++
+			}
+		}
+
+		// 计算该层级的认识率
+		if curId > 0 {
+			knownPer := float64(knownCount) / float64(curId-tmp)
+			knownPers[i] = knownPer
+			totalPer += knownPer
+		} else {
+			knownPers[i] = 0.0
+		}
+	}
+
+	totalPer = totalPer / float64(numLayers)
+	// 根据层级准确率计算下次抽样的数量
+	sampleSize := 0
+	// 从多少个单词抽
+	wordsRange := 5000
+	// weights: 定义层次权重，采用指数衰减的方式
+
+	if totalPer < 0 || totalPer > 1 {
+		msg = "计算的认识率不合法"
+		z.Error(fmt.Sprintf("%s:%s,计算的认识率不合法:%+v", msg, err, reqForm))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	if totalPer < 0.3 {
+		sampleSize = 30
+		wordsRange = 5000
+		weights = []float64{1.0, 0.8, 0.6, 0.4, 0.2, 0.1}
+	} else if totalPer < 0.5 {
+		sampleSize = 60
+		wordsRange = 25000
+		weights = []float64{1.0, 0.8, 0.7, 0.6, 0.5, 0.4}
+	} else if totalPer < 0.7 {
+		sampleSize = 80
+		wordsRange = 40000
+		weights = []float64{1.0, 0.9, 0.8, 0.7, 0.6, 0.5}
+	} else {
+		sampleSize = 100
+		wordsRange = 54000
+		weights = []float64{1.0, 0.9, 0.9, 0.9, 0.8, 0.7}
+	}
+
+	//根据层级准确率计算下次抽样的单词列表
 	// 计算每个层次有多少单词数量 = 划分层级
 	layerSizes := make([]int, numLayers)
-	totalWeight := 0.0
+	totalWeight2 := 0.0
 	for i := 0; i < numLayers; i++ {
-		totalWeight += weights[i]
+		totalWeight2 += weights[i]
 	}
-	remainingWords := totalWords
+	//remainingWords := wordsRange
 	for i := 0; i < numLayers; i++ {
-		layerSizes[i] = int(float64(remainingWords) * weights[i] / totalWeight)
-		remainingWords -= layerSizes[i]
+		layerSizes[i] = int(float64(wordsRange) * weights[i] / totalWeight2)
+		//remainingWords -= layerSizes[i]
 	}
 
 	// 每个层级应该取多少个单词
@@ -142,7 +222,7 @@ func JudgeUserWordLevel(c *gin.Context) {
 	shouldRand := make([]int, numLayers)
 	for i := 0; i < numLayers; i++ {
 		// 计算百分比
-		tmpPer := weights[i] / totalWeight
+		tmpPer := weights[i] / totalWeight2
 		tmpSize := tmpPer * float64(sampleSize)
 		shouldRand[i] = int(tmpSize)
 		randCount += shouldRand[i]
@@ -154,29 +234,52 @@ func JudgeUserWordLevel(c *gin.Context) {
 		shouldRand[0] -= randCount - sampleSize
 	}
 
-	//每个层级的认识率
-	knownPers := make([]float64, numLayers)
-	curId := 0
+	//	生成对应数量的随机数
+	rand.Seed(time.Now().UnixNano())
+
+	randomNumbers2 := make([]int, 0)
+	curCount := 0
 	for i := 0; i < numLayers; i++ {
-		knownCount := 0
-		for ; curId < shouldRand[i]; curId++ {
-			if reqForm.WordList[curId].Known == 1 {
-				knownCount++
-			}
-		}
-		// 计算该层级的认识率
-		knownPer := float64(knownCount) / float64(shouldRand[i])
-		knownPers[i] = knownPer
+		curCount += layerSizes[i]
+		randomNumbers := generateRandomNumbers(shouldRand[i], curCount-layerSizes[i]+1, curCount)
+		randomNumbers2 = append(randomNumbers2, randomNumbers...)
 	}
 
-	// 根据认识率的得分权重计算每个层级的得分
-	knownScores := make([]float64, numLayers)
-	for i := 0; i < numLayers; i++ {
-		knownScores[i] = knownPers[i] * knownWeights[i] * totalKnownWeights * 100
+	// 对 randomNumbers2 进行排序
+	sort.Ints(randomNumbers2)
+
+	list, err := GetWordListById(randomNumbers2)
+	if err != nil {
+		msg = "数据库查询失败"
+		z.Error(fmt.Sprintf(msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
 	}
 
-	response.Success(c, nil)
+	response.Success(c, list)
 	return
+
+	/*
+		// 根据认识率估算每个层级的词汇量
+		knownNums := make([]float64, numLayers)
+		totalNum := 0.0
+		for i := 0; i < numLayers; i++ {
+			knownNums[i] = knownPers[i] * float64(boundaries[i+1]-boundaries[i]) * levelCoefficient[i]
+			totalNum += knownNums[i]
+		}
+		totalNum = math.Round(totalNum)
+
+		// 根据认识率的得分权重计算每个层级的得分
+		knownScores := make([]float64, numLayers)
+		totalScore := 0.0
+		for i := 0; i < numLayers; i++ {
+			knownScores[i] = knownPers[i] * (knownWeights[i] / totalKnownWeights)
+			totalScore += knownScores[i]
+		}
+		totalScore = math.Round(totalScore * 100)
+		avgScore := totalScore / float64(numLayers)
+
+	*/
 
 }
 

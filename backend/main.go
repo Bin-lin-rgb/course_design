@@ -39,7 +39,7 @@ func main() {
 		v2.GET("/getUserInfo", user.GetUserInfo)
 
 		v2.GET("/word/getList1", word.GetWordList1)
-		//v2.GET("/word/getRecord2", word.GetRecord2)
+		v2.POST("/word/postList1", word.JudgeUserWordLevel)
 	}
 
 	server := &http.Server{
