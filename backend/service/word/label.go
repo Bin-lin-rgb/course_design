@@ -2,33 +2,205 @@ package word
 
 import (
 	"backend/utils"
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"math/rand"
+	"net/http"
+	"sort"
+	"time"
 )
 
 var (
 	response *utils.Response
 )
 
-type reqInsertRecord struct {
-	Grade           string   `form:"grade" binding:"required"`           //年级
-	Volume          string   `form:"volume" binding:"required"`          //册数
-	Unit            string   `form:"unit" binding:"required"`            //单元
-	Content         string   `form:"content" binding:"required"`         //内容
-	Corpus          string   `form:"corpus" binding:"required"`          //教材语料
-	ExpressProperty string   `form:"expressProperty" binding:"required"` //表现属性
-	CulturalElem    []string `form:"culturalElem" binding:"required"`    //文化元素
-	CarrierForm     []string `form:"carrierForm" binding:"required"`     //载体形式
+func GetWordList1(c *gin.Context) {
+	var (
+		msg string
+		err error
+	)
+
+	// 设置抽样参数
+	// 从多少个单词抽
+	totalWords := 10000
+	// 分几层
+	numLayers := 10
+	// 抽出来多少个
+	sampleSize := 40
+	// 定义层次权重，采用指数衰减的方式
+	weights := []float64{1.0, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05, 0.03, 0.02, 0.01}
+
+	// 计算每个层次有多少单词数量 = 划分层级
+	layerSizes := make([]int, numLayers)
+	totalWeight := 0.0
+	for i := 0; i < numLayers; i++ {
+		totalWeight += weights[i]
+	}
+	remainingWords := totalWords
+	for i := 0; i < numLayers; i++ {
+		layerSizes[i] = int(float64(remainingWords) * weights[i] / totalWeight)
+		remainingWords -= layerSizes[i]
+	}
+
+	// 每个层级应该取多少个单词
+	randCount := 0
+	shouldRand := make([]int, numLayers)
+	for i := 0; i < numLayers; i++ {
+		// 计算百分比
+		tmpPer := weights[i] / totalWeight
+		tmpSize := tmpPer * float64(sampleSize)
+		shouldRand[i] = int(tmpSize)
+		randCount += shouldRand[i]
+	}
+
+	if randCount < sampleSize {
+		shouldRand[0] += sampleSize - randCount
+	} else if len(shouldRand) > sampleSize {
+		shouldRand[0] -= randCount - sampleSize
+	}
+
+	//	生成对应数量的随机数
+	rand.Seed(time.Now().UnixNano())
+
+	randomNumbers2 := make([]int, 0)
+	curCount := 0
+	for i := 0; i < numLayers; i++ {
+		curCount += layerSizes[i]
+		randomNumbers := generateRandomNumbers(shouldRand[i], curCount-layerSizes[i]+1, curCount)
+		randomNumbers2 = append(randomNumbers2, randomNumbers...)
+	}
+
+	// 对 randomNumbers2 进行排序
+	sort.Ints(randomNumbers2)
+
+	list, err := GetWordListById(randomNumbers2)
+	if err != nil {
+		msg = "数据库查询失败"
+		z.Error(fmt.Sprintf(msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	response.Success(c, list)
+	return
 }
 
-type reqRecordList struct {
-	Page     int64  `form:"page" binding:"required"`
-	PageSize int64  `form:"pageSize" binding:"required"`
-	Grade    string `form:"grade"`    //年级
-	Volume   string `form:"volume"`   //册数
-	Unit     string `form:"unit"`     //单元
-	Content  string `form:"content"`  //内容
-	Username string `form:"username"` //创建人
-	IsLike   int64  `form:"isLike"`   //是否对创建人字段开启模糊查询，0->关闭、1->开启，默认关闭。
-	IsDesc   int64  `form:"isDesc"`   //是否按照时间倒序排序
+type reqWordListItem struct {
+	Id    int    `json:"id" binding:"required"`
+	Word  string `json:"word" binding:"required"`
+	Known int    `json:"known" binding:"required"` //
+}
+
+type reqWordList struct {
+	WordList []reqWordListItem `json:"wordList" binding:"required"`
+}
+
+// JudgeUserWordLevel 根据是否认识单词判断词汇等级，以推出新的单词列表
+func JudgeUserWordLevel(c *gin.Context) {
+	var (
+		reqForm reqWordList
+		msg     string
+		err     error
+	)
+	if err = c.ShouldBindJSON(&reqForm); err != nil {
+		msg = "请求不合法"
+		z.Error(fmt.Sprintf("%s:%s,请求的参数:%+v", msg, err, reqForm))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	// 设置抽样参数
+	// 从多少个单词抽
+	totalWords := 10000
+	// 分几层
+	numLayers := 10
+	// 抽出来多少个
+	sampleSize := 40
+	// 定义层次权重，采用指数衰减的方式
+	weights := []float64{1.0, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05, 0.03, 0.02, 0.01}
+	// 定义层次的得分权重
+	knownWeights := []float64{0.1, 0.15, 0.15, 0.25, 0.25, 0.3, 0.3, 0.3, 0.35, 0.35}
+	totalKnownWeights := 0.0
+	for i := 0; i < numLayers; i++ {
+		totalKnownWeights += knownWeights[i]
+	}
+
+	// 计算每个层次有多少单词数量 = 划分层级
+	layerSizes := make([]int, numLayers)
+	totalWeight := 0.0
+	for i := 0; i < numLayers; i++ {
+		totalWeight += weights[i]
+	}
+	remainingWords := totalWords
+	for i := 0; i < numLayers; i++ {
+		layerSizes[i] = int(float64(remainingWords) * weights[i] / totalWeight)
+		remainingWords -= layerSizes[i]
+	}
+
+	// 每个层级应该取多少个单词
+	randCount := 0
+	shouldRand := make([]int, numLayers)
+	for i := 0; i < numLayers; i++ {
+		// 计算百分比
+		tmpPer := weights[i] / totalWeight
+		tmpSize := tmpPer * float64(sampleSize)
+		shouldRand[i] = int(tmpSize)
+		randCount += shouldRand[i]
+	}
+
+	if randCount < sampleSize {
+		shouldRand[0] += sampleSize - randCount
+	} else if len(shouldRand) > sampleSize {
+		shouldRand[0] -= randCount - sampleSize
+	}
+
+	//每个层级的认识率
+	knownPers := make([]float64, numLayers)
+	curId := 0
+	for i := 0; i < numLayers; i++ {
+		knownCount := 0
+		for ; curId < shouldRand[i]; curId++ {
+			if reqForm.WordList[curId].Known == 1 {
+				knownCount++
+			}
+		}
+		// 计算该层级的认识率
+		knownPer := float64(knownCount) / float64(shouldRand[i])
+		knownPers[i] = knownPer
+	}
+
+	// 根据认识率的得分权重计算每个层级的得分
+	knownScores := make([]float64, numLayers)
+	for i := 0; i < numLayers; i++ {
+		knownScores[i] = knownPers[i] * knownWeights[i] * totalKnownWeights * 100
+	}
+
+	response.Success(c, nil)
+	return
+
+}
+
+func generateRandomNumbers(n, min, max int) []int {
+	if max-min+1 < n {
+		fmt.Println("无法生成指定数量的不重复随机数")
+		return nil
+	}
+
+	rand.Seed(time.Now().UnixNano())
+
+	numbers := make([]int, n)
+	used := make(map[int]bool)
+
+	for i := 0; i < n; i++ {
+		randomNumber := rand.Intn(max-min+1) + min
+		for used[randomNumber] {
+			randomNumber = rand.Intn(max-min+1) + min
+		}
+		numbers[i] = randomNumber
+		used[randomNumber] = true
+	}
+
+	return numbers
 }
 
 /*
@@ -152,215 +324,5 @@ func GetRecordList(c *gin.Context) {
 
 	response.Success(c, resp)
 
-}
-
-type reqRecord struct {
-	Id int64 `form:"id" binding:"required"`
-}
-
-// GetRecord 获取一条记录
-func GetRecord(c *gin.Context) {
-	var (
-		reqForm reqRecord
-		msg     string
-		err     error
-	)
-
-	if err = c.ShouldBindQuery(&reqForm); err != nil {
-		msg = "请求不合法"
-		z.Error(fmt.Sprintf("%s:%s,请求的参数:%+v", msg, err, reqForm))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-
-	textbook := Textbook{}
-	textbook.ID = uint(reqForm.Id)
-	err = textbook.GetARecordById()
-	if err != nil {
-		msg = "数据库查询失败"
-		z.Error(fmt.Sprintf(msg, err))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-
-	user := UserInfo{}
-	user.ID = textbook.CreatorId
-	err = user.GetUserInfoByID()
-	if err != nil {
-		msg = "数据库查询失败"
-		z.Error(fmt.Sprintf(msg, err))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-
-	resp := struct {
-		ID              uint           `json:"id"`
-		CreatorId       uint           `json:"creatorId"`
-		Username        string         `json:"username"`
-		Grade           string         `json:"grade,omitempty"`           //年级
-		Volume          string         `json:"volume,omitempty"`          //册数
-		Unit            string         `json:"unit,omitempty"`            //单元
-		Content         string         `json:"content,omitempty"`         //内容
-		Corpus          types.JSONText `json:"corpus,omitempty"`          //教材语料
-		ExpressProperty types.JSONText `json:"expressProperty,omitempty"` //表现属性
-		CulturalElem    types.JSONText `json:"culturalElem,omitempty"`    //文化元素
-		CarrierForm     types.JSONText `json:"carrierForm,omitempty"`     //载体形式
-	}{
-		ID:              textbook.ID,
-		CreatorId:       textbook.ID,
-		Username:        user.Username,
-		Grade:           textbook.Grade,
-		Volume:          textbook.Volume,
-		Unit:            textbook.Unit,
-		Content:         textbook.Content,
-		Corpus:          textbook.Corpus,
-		ExpressProperty: textbook.ExpressProperty,
-		CulturalElem:    textbook.CulturalElem,
-		CarrierForm:     textbook.CarrierForm,
-	}
-
-	response.Success(c, resp)
-
-}
-
-type reqModifyRecord struct {
-	ID              uint     `json:"id" binding:"required"`
-	Grade           string   `form:"grade" binding:"required"`           //年级
-	Volume          string   `form:"volume" binding:"required"`          //册数
-	Unit            string   `form:"unit" binding:"required"`            //单元
-	Content         string   `form:"content" binding:"required"`         //内容
-	Corpus          string   `form:"corpus" binding:"required"`          //教材语料
-	ExpressProperty string   `form:"expressProperty" binding:"required"` //表现属性
-	CulturalElem    []string `form:"culturalElem" binding:"required"`    //文化元素
-	CarrierForm     []string `form:"carrierForm" binding:"required"`     //载体形式
-}
-
-// UpdateRecord 修改一条记录
-func UpdateRecord(c *gin.Context) {
-	var (
-		reqForm reqModifyRecord
-		msg     string
-		err     error
-	)
-
-	if err = c.ShouldBind(&reqForm); err != nil {
-		msg = "请求不合法"
-		z.Error(fmt.Sprintf(msg, err))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-
-	corpus, _ := json.Marshal(reqForm.Corpus)
-	expressProperty, _ := json.Marshal(reqForm.ExpressProperty)
-	culturalElem, _ := json.Marshal(reqForm.CulturalElem)
-	carrierForm, _ := json.Marshal(reqForm.CarrierForm)
-
-	// 获取创建者Id
-	temp, ok := c.Get("userID")
-	if !ok {
-		msg = "服务器出错，请稍后重试"
-		z.Error("从 *gin.Context 获取用户 ID 失败")
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-	// 只能是先转 int64 或 string
-	userID, _ := temp.(int64)
-
-	text := Textbook{}
-	text.ID = reqForm.ID
-	err = text.GetARecordById()
-	if err != nil {
-		msg = "数据库查询失败"
-		z.Error(fmt.Sprintf(msg, err))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-	// 不是本人，无法修改
-	if uint(userID) != text.CreatorId {
-		msg = "抱歉，无权修改他人创建的语料"
-		z.Error(fmt.Sprintf(msg, err))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-
-	textbook := Textbook{
-		Grade:           reqForm.Grade,
-		Volume:          reqForm.Volume,
-		Unit:            reqForm.Unit,
-		Content:         reqForm.Content,
-		Corpus:          corpus,
-		ExpressProperty: expressProperty,
-		CulturalElem:    culturalElem,
-		CarrierForm:     carrierForm,
-	}
-	textbook.ID = reqForm.ID
-	err = textbook.Update()
-	if err != nil {
-		msg = "数据库更新失败"
-		z.Error(fmt.Sprintf(msg, err))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-
-	response.Success(c, nil)
-}
-
-type reqDeleteRecord struct {
-	Id int64 `form:"id" binding:"required"`
-}
-
-// DeleteRecord 删除一条记录
-func DeleteRecord(c *gin.Context) {
-	var (
-		reqForm reqDeleteRecord
-		msg     string
-		err     error
-	)
-
-	if err = c.ShouldBindQuery(&reqForm); err != nil {
-		msg = "请求不合法"
-		z.Error(fmt.Sprintf("%s:%s,请求的参数:%+v", msg, err, reqForm))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-
-	// 获取创建者Id
-	temp, ok := c.Get("userID")
-	if !ok {
-		msg = "服务器出错，请稍后重试"
-		z.Error("从 *gin.Context 获取用户 ID 失败")
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-	// 只能是先转 int64 或 string
-	userID, _ := temp.(int64)
-
-	text := Textbook{}
-	text.ID = uint(reqForm.Id)
-	err = text.GetARecordById()
-	if err != nil {
-		msg = "数据库查询失败"
-		z.Error(fmt.Sprintf(msg, err))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-	// 不是本人，无法删除
-	if uint(userID) != text.CreatorId {
-		msg = "抱歉，无权删除他人创建的语料"
-		z.Error(fmt.Sprintf(msg, err))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-
-	err = text.DeleteRecord()
-	if err != nil {
-		msg = "数据库删除失败"
-		z.Error(fmt.Sprintf(msg, err))
-		response.Err(c, http.StatusOK, msg, nil)
-		return
-	}
-
-	response.Success(c, nil)
-	return
 }
 */

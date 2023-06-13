@@ -5,6 +5,11 @@ import "backend/common"
 type Wordbook common.Wordbook
 type UserInfo common.UserInfo
 
+func GetWordListById(Ids []int) (wordList []Wordbook, err error) {
+	result := db.Model(&Wordbook{}).Select("id,word").Where("id in ?", Ids).Find(&wordList)
+	return wordList, result.Error
+}
+
 /*
 func (t *Textbook) GetAllRecordByPage(page, pageSize int, grade, volume, unit, content string, IsDesc int64, creatorIds []uint) (records []Textbook, total int64, err error) {
 	result := db.Model(&Textbook{})

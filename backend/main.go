@@ -5,6 +5,7 @@ import (
 	_ "backend/common"
 	conf "backend/config"
 	"backend/service/user"
+	"backend/service/word"
 	"backend/utils"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -37,7 +38,7 @@ func main() {
 		v2.POST("/setGrade", user.SetGrade)
 		v2.GET("/getUserInfo", user.GetUserInfo)
 
-		//v2.GET("/word/getRecord1", word.GetRecord)
+		v2.GET("/word/getList1", word.GetWordList1)
 		//v2.GET("/word/getRecord2", word.GetRecord2)
 	}
 
