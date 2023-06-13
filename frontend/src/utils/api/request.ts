@@ -12,7 +12,7 @@ service.interceptors.request.use(
     if (token) {
       if (config && config.headers) {
         // 多一步判断
-        config.headers.Authorization = `Bearer ${token}`; // 将accessToken放入到请求头里
+        config.headers.Authorization = `${token}`; // 将accessToken放入到请求头里
       }
     }
     return config;

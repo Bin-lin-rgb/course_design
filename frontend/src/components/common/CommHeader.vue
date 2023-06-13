@@ -6,7 +6,7 @@
       </h1>
       <div class="content-nav">
         <ul>
-          <router-link class="link" to="/">首页</router-link>
+          <router-link class="link" to="/">关于我们</router-link>
           <li>课程</li>
           <li>直播</li>
           <li>活动</li>

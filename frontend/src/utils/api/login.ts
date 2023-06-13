@@ -18,7 +18,7 @@ export function register(data: any) {
 
 export function getUserInfo() {
   return request({
-    url: `/api/v1/user`,
+    url: `/api/basic-api/getUserInfo`,
   });
 }
 
