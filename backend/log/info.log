@@ -147,3 +147,30 @@
 2023-06-13 16:58:03 	[34mINFO[0m	common/init.go:103	mysql connected
 2023-06-13 16:58:03 	[34mINFO[0m	backend/main.go:52	listening8080
 2023-06-13 16:58:06 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 20:19:21 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-13 20:19:22 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-13 20:19:22 	[34mINFO[0m	backend/main.go:52	listening8080
+2023-06-13 20:21:03 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-13 20:21:08 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-13 20:23:50 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-13 20:23:56 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-13 21:07:35 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-13 21:07:36 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-13 21:07:36 	[34mINFO[0m	backend/main.go:53	listening8080
+2023-06-13 21:11:39 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 21:14:24 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 21:17:50 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 21:18:26 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 21:19:55 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 21:20:03 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 21:25:54 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-13 21:25:54 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-13 21:25:54 	[34mINFO[0m	backend/main.go:53	listening8080
+2023-06-13 21:26:04 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 21:34:56 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-13 21:34:56 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-13 21:34:56 	[34mINFO[0m	backend/main.go:53	listening8080
+2023-06-13 21:34:59 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 21:36:35 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 21:37:11 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-13 21:40:38 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2

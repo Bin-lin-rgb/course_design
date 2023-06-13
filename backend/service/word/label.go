@@ -37,10 +37,10 @@ func GetWordList1(c *gin.Context) {
 	for i := 0; i < numLayers; i++ {
 		totalWeight += weights[i]
 	}
-	remainingWords := totalWords
+	//remainingWords := totalWords
 	for i := 0; i < numLayers; i++ {
-		layerSizes[i] = int(float64(remainingWords) * weights[i] / totalWeight)
-		remainingWords -= layerSizes[i]
+		layerSizes[i] = int(float64(totalWords) * weights[i] / totalWeight)
+		//remainingWords -= layerSizes[i]
 	}
 
 	// 每个层级应该取多少个单词
@@ -259,6 +259,98 @@ func JudgeUserWordLevel(c *gin.Context) {
 	response.Success(c, list)
 	return
 
+}
+
+func CalculateVocabulary(c *gin.Context) {
+	var (
+		reqForm reqWordList
+		msg     string
+		err     error
+	)
+	if err = c.ShouldBindJSON(&reqForm); err != nil {
+		msg = "请求不合法"
+		z.Error(fmt.Sprintf("%s:%s,请求的参数:%+v", msg, err, reqForm))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+	if len(reqForm.WordList) < 3 {
+		msg = "参数太少，请求不合法"
+		z.Error(fmt.Sprintf("%s:%s,请求的参数太少啦:%+v", msg, err, reqForm))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	// 设置抽样参数
+	numLayers := 6
+	totalWords := reqForm.WordList[len(reqForm.WordList)-1].Id
+
+	// 定义层次权重，采用指数衰减的方式
+	weights := []float64{1.0, 0.8, 0.6, 0.4, 0.2, 0.1}
+	totalWeight := 0.0
+	for i := 0; i < numLayers; i++ {
+		totalWeight += weights[i]
+	}
+
+	// 定义层次的得分权重
+	knownWeights := []float64{1.0, 1.3, 1.6, 1.9, 2.2, 2.5}
+	totalKnownWeights := 0.0
+	for i := 0; i < numLayers; i++ {
+		totalKnownWeights += knownWeights[i]
+	}
+
+	// 定义层次系数
+	//levelCoefficient := []float64{0.95, 0.8, 0.85, 0.8, 0.75, 0.7}
+
+	// 计算每个层次的分界线 = 划分层级
+	boundaries := make([]int, numLayers+1)
+	boundaries[0] = 1
+	for i := 1; i <= numLayers; i++ {
+		boundary := int(math.Round(float64(totalWords) * (weights[i-1] / totalWeight)))
+		boundaries[i] = boundaries[i-1] + boundary
+	}
+
+	// 计算每个层次有多少单词认识 = 认识率
+	knownPers := make([]float64, numLayers)
+	totalPer := 0.0
+	curId := 0
+	length := len(reqForm.WordList)
+
+	for i := 0; i < numLayers; i++ {
+		tmp := curId
+		knownCount := 0
+		layerBoundaryStart := boundaries[i]
+		layerBoundaryEnd := boundaries[i+1]
+
+		for ; curId < length && reqForm.WordList[curId].Id < layerBoundaryEnd; curId++ {
+			if reqForm.WordList[curId].Id > layerBoundaryStart && reqForm.WordList[curId].Known == 1 {
+				knownCount++
+			}
+		}
+
+		// 计算该层级的认识率
+		if curId > 0 {
+			knownPer := float64(knownCount) / float64(curId-tmp)
+			knownPers[i] = knownPer
+			totalPer += knownPer
+		} else {
+			knownPers[i] = 0.0
+		}
+	}
+
+	totalPer = totalPer / float64(numLayers)
+
+	// 根据认识率的得分权重计算每个层级的得分
+	knownScores := make([]float64, numLayers)
+	totalScore := 0.0
+	for i := 0; i < numLayers; i++ {
+		knownScores[i] = knownPers[i] * (knownWeights[i] / totalKnownWeights)
+		totalScore += knownScores[i]
+	}
+	totalNum2 := math.Round(float64(totalWords) * totalScore)
+
+	response.Success(c, totalNum2)
+	return
+
 	/*
 		// 根据认识率估算每个层级的词汇量
 		knownNums := make([]float64, numLayers)
@@ -268,16 +360,6 @@ func JudgeUserWordLevel(c *gin.Context) {
 			totalNum += knownNums[i]
 		}
 		totalNum = math.Round(totalNum)
-
-		// 根据认识率的得分权重计算每个层级的得分
-		knownScores := make([]float64, numLayers)
-		totalScore := 0.0
-		for i := 0; i < numLayers; i++ {
-			knownScores[i] = knownPers[i] * (knownWeights[i] / totalKnownWeights)
-			totalScore += knownScores[i]
-		}
-		totalScore = math.Round(totalScore * 100)
-		avgScore := totalScore / float64(numLayers)
 
 	*/
 

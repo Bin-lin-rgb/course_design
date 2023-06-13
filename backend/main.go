@@ -40,6 +40,7 @@ func main() {
 
 		v2.GET("/word/getList1", word.GetWordList1)
 		v2.POST("/word/postList1", word.JudgeUserWordLevel)
+		v2.POST("/word/getVocabulary", word.CalculateVocabulary)
 	}
 
 	server := &http.Server{
