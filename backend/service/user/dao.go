@@ -21,6 +21,14 @@ func (u *UserInfo) IsExist() error {
 	return result.Error
 }
 
+func (u *UserInfo) SetGrade() error {
+	result := db.Model(&UserInfo{}).Where("id = ?", u.ID).Updates(map[string]interface{}{
+		"four_grade": u.FourGrade,
+		"six_grade":  u.SixGrade,
+	})
+	return result.Error
+}
+
 func (u *UserInfo) UpdatePassword() error {
 	result := db.Model(&UserInfo{}).Where("account = ?", u.Account).Update("password", u.Password)
 	return result.Error

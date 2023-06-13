@@ -33,6 +33,8 @@ func main() {
 
 	v2.Use(utils.AuthUser())
 	{
+
+		v2.POST("/setGrade", user.SetGrade)
 		v2.GET("/getUserInfo", user.GetUserInfo)
 
 		//v2.GET("/word/getRecord1", word.GetRecord)

@@ -125,6 +125,46 @@ func Login(c *gin.Context) {
 	response.Success(c, resp)
 }
 
+type reqSetGrade struct {
+	FourGrade string `json:"fourGrade" binding:"required"`
+	SixGrade  string `json:"sixGrade" binding:"required"`
+}
+
+func SetGrade(c *gin.Context) {
+	var (
+		reqForm reqSetGrade
+		msg     string
+		err     error
+	)
+
+	userID, _ := c.Get("userID")
+
+	if err = c.ShouldBind(&reqForm); err != nil {
+		msg = "请求不合法"
+		z.Error(msg)
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+	user := UserInfo{
+		FourGrade: reqForm.FourGrade,
+		SixGrade:  reqForm.SixGrade,
+		Model:     gorm.Model{ID: uint(userID.(int64))},
+	}
+	err = user.SetGrade()
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			msg = fmt.Sprintf("账户 %s 不存在，无法设置四级六级成绩", user.Account)
+			z.Error(msg)
+		} else {
+			msg = "设置四六级成绩失败"
+			z.Error(fmt.Sprintf("%s:%s", msg, err))
+		}
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+	response.Success(c, nil)
+}
+
 type reqResetPassword struct {
 	Account  string `form:"account" binding:"required"`
 	Password string `form:"password" binding:"required"`
