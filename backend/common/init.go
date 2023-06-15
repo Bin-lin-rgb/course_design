@@ -94,7 +94,7 @@ func initMysql() {
 		panic("连接数据库失败")
 	}
 
-	err = mysqlDb.AutoMigrate(&UserInfo{}, &Wordbook{})
+	err = mysqlDb.AutoMigrate(&UserInfo{}, &Wordbook{}, &BatchProcessRecord{})
 	if err != nil {
 		z.Error("数据库初始化失败")
 		panic("数据库初始化失败")
