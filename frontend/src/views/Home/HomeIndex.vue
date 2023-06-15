@@ -2,7 +2,7 @@
   <CommHeader />
   <div class="common-layout">
     <el-form-item>
-      <h1>Step 1 of 2: test your broad vocab level</h1>
+      <h1 style="left: 5%;">Step 1 of 2: test your broad vocab level</h1>
       <el-divider />
     </el-form-item>
     <el-container class="container">
@@ -17,8 +17,8 @@
         </el-checkbox>
       </div>
     </div>
-    <button @click="sendData">继续测试</button>
-    <button @click="aaa">List1</button>
+    <button class="continue-test" @click="sendData">继续测试</button>
+    <button class="list-1" @click="aaa">List1</button>
   </div>
 </template>
 
@@ -101,6 +101,7 @@ async function sendData() {
 // }
 .checkbox-row {
   display: flex;
+  left: 5%;
 }
 
 .checkbox-item {
@@ -114,4 +115,51 @@ async function sendData() {
 
   font-size: 12px;
 }
+
+.common-layout{
+  background-color: rgb(228, 237, 237);
+  // background-image: url('@/assets/img/动态图.jpg');
+  background-size: cover;
+  background-position: center;
+  width: 8000px;
+  height: 600px;
+  margin-top: 60px; 
+  border-radius: 50px;
+}
+
+.continue-test{
+  left: 5%;
+  top:7%;
+  background: linear-gradient(to bottom, #8ab7ee, #2582ee);
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 25px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease-in-out;
+}
+
+.list-1{
+  left: 20%;
+  top:7%;
+  background: linear-gradient(to bottom, #8ab7ee, #2582ee);
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 25px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease-in-out;
+}
+.container{
+  left: 3%;
+}
+
 </style>
