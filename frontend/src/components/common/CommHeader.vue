@@ -6,28 +6,15 @@
       </h1>
       <div class="content-nav">
         <ul>
-          <router-link class="link" to="/">关于我们</router-link>
-          <li>课程</li>
-          <li>直播</li>
-          <li>活动</li>
+          <li></li>
+          <li></li>
+          <li style="color: #6ED1F5;">Find tutos</li>
+          <li style="color: #6ED1F5;">Becoming a tutor</li>
+          <li style="color: #6ED1F5;">Exercises</li>
         </ul>
       </div>
       <div class="search-login">
-        <div class="content-search">
-          <input type="" placeholder="请输入要搜索的内容" />
-          <el-icon color="#808080" :size="22">
-            <search style="width: 22px; height: 22px" />
-          </el-icon>
-        </div>
-        <div class="content-create">
-          <button class="cta" @click="gotoCreator">
-            <span>创作者中心</span>
-            <svg viewBox="0 0 13 10" height="10px" width="15px">
-              <path d="M1,5 L11,5"></path>
-              <polyline points="8 1 12 5 8 9"></polyline>
-            </svg>
-          </button>
-        </div>
+        
         <div class="content-BellFilled">
           <el-icon :size="25" color="#8A919F"><BellFilled /></el-icon>
         </div>
@@ -164,7 +151,7 @@ header {
 }
 
 .content-nav {
-  width: 300px;
+  width: 450px;
   height: 75px;
 }
 
@@ -289,4 +276,5 @@ header {
   position: fixed;
   right: 20px;
 }
+
 </style>
