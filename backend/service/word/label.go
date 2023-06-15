@@ -4,12 +4,19 @@ import (
 	"backend/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/xuri/excelize/v2"
 	"math"
 	"math/rand"
 	"net/http"
+	"os"
+	"path"
 	"sort"
+	"strconv"
 	"time"
 )
+
+var UploadFile = "./upload"
 
 var (
 	response *utils.Response
@@ -280,89 +287,19 @@ func CalculateVocabulary(c *gin.Context) {
 		return
 	}
 
-	// 设置抽样参数
-	numLayers := 6
-	totalWords := reqForm.WordList[len(reqForm.WordList)-1].Id
-
-	// 定义层次权重，采用指数衰减的方式
-	weights := []float64{1.0, 0.8, 0.6, 0.4, 0.2, 0.1}
-	totalWeight := 0.0
-	for i := 0; i < numLayers; i++ {
-		totalWeight += weights[i]
+	//var list []Wordbook2
+	list := make([]Wordbook2, len(reqForm.WordList))
+	// 将 reqForm.WordList 转换成 workbook2
+	for i := 0; i < len(reqForm.WordList); i++ {
+		list[i].ID = uint(reqForm.WordList[i].Id)
+		list[i].Word = reqForm.WordList[i].Word
+		list[i].Known = strconv.Itoa(reqForm.WordList[i].Known)
 	}
 
-	// 定义层次的得分权重
-	knownWeights := []float64{1.0, 1.3, 1.6, 1.9, 2.2, 2.5}
-	totalKnownWeights := 0.0
-	for i := 0; i < numLayers; i++ {
-		totalKnownWeights += knownWeights[i]
-	}
+	vo := EstimateVocabulary(list)
 
-	// 定义层次系数
-	//levelCoefficient := []float64{0.95, 0.8, 0.85, 0.8, 0.75, 0.7}
-
-	// 计算每个层次的分界线 = 划分层级
-	boundaries := make([]int, numLayers+1)
-	boundaries[0] = 1
-	for i := 1; i <= numLayers; i++ {
-		boundary := int(math.Round(float64(totalWords) * (weights[i-1] / totalWeight)))
-		boundaries[i] = boundaries[i-1] + boundary
-	}
-
-	// 计算每个层次有多少单词认识 = 认识率
-	knownPers := make([]float64, numLayers)
-	totalPer := 0.0
-	curId := 0
-	length := len(reqForm.WordList)
-
-	for i := 0; i < numLayers; i++ {
-		tmp := curId
-		knownCount := 0
-		layerBoundaryStart := boundaries[i]
-		layerBoundaryEnd := boundaries[i+1]
-
-		for ; curId < length && reqForm.WordList[curId].Id < layerBoundaryEnd; curId++ {
-			if reqForm.WordList[curId].Id > layerBoundaryStart && reqForm.WordList[curId].Known == 1 {
-				knownCount++
-			}
-		}
-
-		// 计算该层级的认识率
-		if curId > 0 {
-			knownPer := float64(knownCount) / float64(curId-tmp)
-			knownPers[i] = knownPer
-			totalPer += knownPer
-		} else {
-			knownPers[i] = 0.0
-		}
-	}
-
-	totalPer = totalPer / float64(numLayers)
-
-	// 根据认识率的得分权重计算每个层级的得分
-	knownScores := make([]float64, numLayers)
-	totalScore := 0.0
-	for i := 0; i < numLayers; i++ {
-		knownScores[i] = knownPers[i] * (knownWeights[i] / totalKnownWeights)
-		totalScore += knownScores[i]
-	}
-	totalNum2 := math.Round(float64(totalWords) * totalScore)
-
-	response.Success(c, totalNum2)
+	response.Success(c, vo)
 	return
-
-	/*
-		// 根据认识率估算每个层级的词汇量
-		knownNums := make([]float64, numLayers)
-		totalNum := 0.0
-		for i := 0; i < numLayers; i++ {
-			knownNums[i] = knownPers[i] * float64(boundaries[i+1]-boundaries[i]) * levelCoefficient[i]
-			totalNum += knownNums[i]
-		}
-		totalNum = math.Round(totalNum)
-
-	*/
-
 }
 
 func generateRandomNumbers(n, min, max int) []int {
@@ -388,126 +325,234 @@ func generateRandomNumbers(n, min, max int) []int {
 	return numbers
 }
 
-/*
-func GetRecordList(c *gin.Context) {
+type resBatchProcessItem struct {
+	Round            int    `json:"round"`
+	TestVocabulary   int    `json:"test_vocabulary"`
+	PreplyVocabulary string `json:"preply_vocabulary"`
+	CalculatedWords  int    `json:"calculated_words"`
+}
+
+func BatchProcess(c *gin.Context) {
 	var (
-		reqForm reqRecordList
-		msg     string
-		err     error
+		msg string
+		err error
 	)
 
-	if err = c.ShouldBindQuery(&reqForm); err != nil {
-		msg = "请求不合法"
-		z.Error(fmt.Sprintf("%s:%s,请求的参数:%+v", msg, err, reqForm))
+	file, err := c.FormFile("file")
+	if err != nil {
+		msg = "文件上传失败"
+		z.Error(fmt.Sprintf("%s:%s", msg, err))
 		response.Err(c, http.StatusOK, msg, nil)
 		return
 	}
 
-	// 获取可能的创建者 ID 数组
-	creatorIds := make([]uint, 0)
-	if reqForm.Username != "" {
-		creator := UserInfo{}
-		creators := make([]UserInfo, 0)
-		creator.Username = reqForm.Username
-		if reqForm.IsLike == 1 {
-			creators, err = creator.GetUserInfoByUsername()
-		} else {
-			creators, err = creator.GetUserInfoByUsernameNoLike()
-		}
-		if err != nil {
-			msg = "数据库查询失败"
-			z.Error(fmt.Sprintf(msg, err))
+	//获取文件名
+	fileName := file.Filename
+
+	if file.Size > 10*1024*1024 {
+		msg = "文件过大"
+		z.Error(fmt.Sprintf("文件过大:%s", msg))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	newUUID, _ := uuid.NewUUID()
+
+	// 文件后缀
+	fileSuffix := path.Ext(fileName)
+	// 路径
+	dst := path.Join(UploadFile, newUUID.String()+fileSuffix)
+
+	// 先判断目录是否存在，如果目录不存在则创建
+	if _, err := os.Stat(UploadFile); os.IsNotExist(err) {
+		// 目录不存在，创建目录
+		if err := os.MkdirAll(UploadFile, os.ModePerm); err != nil {
+			msg = "文件夹创建失败"
+			z.Error(fmt.Sprintf("文件夹创建失败：%s %s", msg, err))
 			response.Err(c, http.StatusOK, msg, nil)
 			return
 		}
-		creatorIds = make([]uint, len(creators))
-		for i, info := range creators {
-			creatorIds[i] = info.ID
-		}
+		z.Info("Directory created successfully!")
 	}
 
-	textbook := Textbook{}
-	page := int(reqForm.Page)
-	pageSize := int(reqForm.PageSize)
-	records, total, err := textbook.GetAllRecordByPage(page, pageSize, reqForm.Grade,
-		reqForm.Volume, reqForm.Unit, reqForm.Content, reqForm.IsDesc, creatorIds)
-	if err != nil {
-		msg = "数据库查询失败"
-		z.Error(fmt.Sprintf(msg, err))
+	if err := c.SaveUploadedFile(file, dst); err != nil {
+		msg = "文件保存失败"
+		z.Error(fmt.Sprintf("保存失败：%s %s", msg, err))
 		response.Err(c, http.StatusOK, msg, nil)
 		return
 	}
 
-	// 获取 records 的 CreatorId 数组
-	ids := make([]uint, len(records))
-	for i, record := range records {
-		ids[i] = record.CreatorId
-	}
-	// usernames 数组，与 CreatorId 数组 一一对应
-	// usernames := make([]string, len(ids))
-	// 通过 CreatorId 数组获取 []UserInfo
-	// 不能直接在遍历 []UserInfo 得到 usernames 数组，因为 CreatorId 数组可能有重复的
-	userinfo := UserInfo{}
-	users, err := userinfo.GetUsernameByIds(ids)
+	f, err := excelize.OpenFile(dst)
 	if err != nil {
-		msg = "数据库查询失败"
-		z.Error(fmt.Sprintf(msg, err))
+		msg = "文件打开失败"
+		z.Error(fmt.Sprintf("文件打开失败：%s %s", msg, err))
 		response.Err(c, http.StatusOK, msg, nil)
 		return
 	}
-	usersMap := make(map[uint]string, len(users))
-	for _, user := range users {
-		usersMap[user.ID] = user.Username
-	}
 
-	type Item struct {
-		ID              int            `json:"id"`
-		Grade           string         `json:"grade"`           //年级
-		Volume          string         `json:"volume"`          //册数
-		Unit            string         `json:"unit"`            //单元
-		Content         string         `json:"content"`         //内容
-		Corpus          types.JSONText `json:"corpus"`          //教材语料
-		ExpressProperty types.JSONText `json:"expressProperty"` //表现属性
-		CulturalElem    types.JSONText `json:"culturalElem"`    //文化元素
-		CarrierForm     types.JSONText `json:"carrierForm"`     //载体形式
-		CreatedAt       string         `json:"createdAt"`       //创建时间
-		CreatorId       uint           `json:"creatorId"`       //创建人ID
-		Username        string         `json:"username"`        //创建者昵称
-	}
-
-	var items []Item
-	for i, record := range records {
-		corpus, _ := record.Corpus.MarshalJSON()
-		expressProperty, _ := record.ExpressProperty.MarshalJSON()
-		culturalElem, _ := record.CulturalElem.MarshalJSON()
-		carrierForm, _ := record.CarrierForm.MarshalJSON()
-
-		item := Item{
-			ID:              int(record.Model.ID),
-			Grade:           record.Grade,
-			Volume:          record.Volume,
-			Unit:            record.Unit,
-			Content:         record.Content,
-			Corpus:          corpus,
-			ExpressProperty: expressProperty,
-			CulturalElem:    culturalElem,
-			CarrierForm:     carrierForm,
-			CreatedAt:       record.CreatedAt.Format("2006-01-02 15:04:05"),
-			CreatorId:       record.CreatorId,
-			Username:        usersMap[ids[i]],
+	defer func() {
+		if err := f.Close(); err != nil {
+			z.Error(fmt.Sprintf("关闭导入的文件失败：%s", err))
 		}
-		items = append(items, item)
+		if err := os.Remove(dst); err != nil {
+			z.Error(fmt.Sprintf("删除导入的文件失败：%s", err))
+		}
+	}()
+
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		msg = "获取数据失败"
+		z.Error(fmt.Sprintf("获取数据失败：%s %s", msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
 	}
 
-	resp := struct {
-		Items []Item `json:"items"`
-		Total int64  `json:"total"`
-	}{
-		Items: items,
-		Total: total,
+	// 是否为 3 的倍数行
+	if (len(rows))%3 != 0 {
+		msg = "数据不合法"
+		z.Error(fmt.Sprintf("数据不合法：%s %s", msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
 	}
 
-	response.Success(c, resp)
+	var res []resBatchProcessItem
 
+	round := 1
+	for i := 0; i < len(rows); i = i + 3 {
+		list, err := GetWordListByWordArray(rows[i])
+		if err != nil {
+			msg = "获取数据失败"
+			z.Error(fmt.Sprintf("获取数据失败：%s %s", msg, err))
+			response.Err(c, http.StatusOK, msg, nil)
+			return
+		}
+
+		// 拼接 known 属性
+		for j := 0; j < len(list); j++ {
+			list[j].Known = rows[i+1][j]
+		}
+
+		// 此处开始估算词汇量
+		vo := EstimateVocabulary(list)
+
+		item := resBatchProcessItem{
+			Round:            round,
+			TestVocabulary:   vo,
+			PreplyVocabulary: rows[i+2][0],
+			CalculatedWords:  len(list),
+		}
+		res = append(res, item)
+
+		round++
+	}
+
+	response.Success(c, res)
+	return
 }
-*/
+
+func EstimateVocabulary(list []Wordbook2) int {
+	// 设置抽样参数
+	numLayers := 10
+	totalWords := 54000
+	maxWordRank := int(list[len(list)-1].ID)
+
+	// 词汇太少了，无法估算
+	if len(list) < numLayers {
+		return 20
+	}
+
+	// 定义层次权重，采用指数衰减的方式
+	weights := []float64{1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.1, 0.1}
+	totalWeight := 0.0
+	for i := 0; i < numLayers; i++ {
+		totalWeight += weights[i]
+	}
+
+	// 定义层次的得分权重
+	knownWeights := []float64{1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4}
+
+	// 定义层次系数
+	//levelCoefficient := []float64{0.95, 0.8, 0.85, 0.8, 0.75, 0.7}
+
+	// 计算每个层次的分界线 = 划分层级
+	boundaries := make([]int, numLayers+1)
+	boundaries[0] = 1
+	for i := 1; i <= numLayers; i++ {
+		boundary := int(math.Round(float64(totalWords) * (weights[i-1] / totalWeight)))
+		boundaries[i] = boundaries[i-1] + boundary
+	}
+
+	maxNumLayers := 0
+	for i := 0; i < len(boundaries); i++ {
+		if boundaries[i] > maxWordRank {
+			maxNumLayers = i
+			break
+		}
+	}
+
+	totalKnownWeights := 0.0
+	for i := 0; i < maxNumLayers; i++ {
+		totalKnownWeights += knownWeights[i]
+	}
+
+	// 计算每个层次有多少单词认识 = 认识率
+	knownPers := make([]float64, maxNumLayers)
+	totalPer := 0.0
+	curId := 0
+	length := len(list)
+
+	for i := 0; i < maxNumLayers; i++ {
+		tmp := curId
+		knownCount := 0
+		layerBoundaryStart := boundaries[i]
+		layerBoundaryEnd := boundaries[i+1]
+
+		for ; curId < length && list[curId].ID < uint(layerBoundaryEnd); curId++ {
+			if list[curId].ID > uint(layerBoundaryStart) && list[curId].Known == "1" {
+				knownCount++
+			}
+		}
+
+		// 计算该层级的认识率
+		if curId > 0 {
+			knownPer := float64(knownCount) / float64(curId-tmp)
+			knownPers[i] = knownPer
+			totalPer += knownPer
+		} else {
+			knownPers[i] = 0.0
+		}
+	}
+
+	totalPer = totalPer / float64(maxNumLayers)
+	if totalPer == 0 {
+		return 20
+	}
+
+	// 根据认识率的得分权重计算每个层级的得分
+	knownScores := make([]float64, maxNumLayers)
+	totalScore := 0.0
+	for i := 0; i < maxNumLayers; i++ {
+		knownScores[i] = knownPers[i] * (knownWeights[i] / totalKnownWeights)
+		totalScore += knownScores[i]
+	}
+	totalNum2 := math.Round(float64(totalWords) * totalScore)
+	// float64 转换成 int
+	totalNum := int(totalNum2)
+	if totalNum > 54000 || totalNum < 0 {
+		return 20
+	}
+
+	return totalNum
+
+	/*
+		// 根据认识率估算每个层级的词汇量
+		knownNums := make([]float64, numLayers)
+		totalNum := 0.0
+		for i := 0; i < numLayers; i++ {
+			knownNums[i] = knownPers[i] * float64(boundaries[i+1]-boundaries[i]) * levelCoefficient[i]
+			totalNum += knownNums[i]
+		}
+		totalNum = math.Round(totalNum)
+
+	*/
+}
