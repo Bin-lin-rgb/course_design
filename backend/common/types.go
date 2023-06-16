@@ -7,11 +7,12 @@ import (
 // UserInfo 用户信息
 type UserInfo struct {
 	gorm.Model
-	Account   string `json:"account" gorm:"unique"`
-	Username  string `json:"username" gorm:"unique"`
-	Password  string `json:"password"`
-	FourGrade string `json:"fourGrade"`
-	SixGrade  string `json:"sixGrade"`
+	Account         string `json:"account" gorm:"unique"`
+	Username        string `json:"username" gorm:"unique"`
+	Password        string `json:"password"`
+	FourGrade       string `json:"fourGrade"`
+	SixGrade        string `json:"sixGrade"`
+	BasicVocabulary string `json:"basicVocabulary"`
 }
 
 // Wordbook 语料信息

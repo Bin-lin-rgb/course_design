@@ -43,3 +43,15 @@ func (u *UserInfo) GetUsernameByIds(ids []uint) (users []UserInfo, err error) {
 	err = db.Select("id, username").Where("id IN (?)", ids).Distinct().Find(&users).Error
 	return users, err
 }
+
+func (u *UserInfo) GetUserInfoByID() error {
+	result := db.Model(&UserInfo{}).First(u)
+	return result.Error
+}
+
+func (u *UserInfo) UpdateVocabulary() error {
+	result := db.Model(&UserInfo{}).Where("id = ?", u.ID).Updates(map[string]interface{}{
+		"basic_vocabulary": u.BasicVocabulary,
+	})
+	return result.Error
+}

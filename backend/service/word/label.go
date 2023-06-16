@@ -6,6 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/xuri/excelize/v2"
+	"gorm.io/gorm"
+
+	"encoding/json"
 	"math"
 	"math/rand"
 	"net/http"
@@ -297,6 +300,39 @@ func CalculateVocabulary(c *gin.Context) {
 	}
 
 	vo := EstimateVocabulary(list)
+
+	userID, _ := c.Get("userID")
+	user := UserInfo{
+		Model: gorm.Model{ID: uint(userID.(int64))},
+	}
+	err = user.GetUserInfoByID()
+	if err != nil {
+		msg = "数据库查询失败"
+		z.Error(fmt.Sprintf(msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	var array []int
+	err = json.Unmarshal([]byte(user.BasicVocabulary), &array)
+
+	array = append(array, vo)
+
+	bytes, err := json.Marshal(array)
+	if err != nil {
+		msg = "内部服务器错误"
+		z.Error(fmt.Sprintf(msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+	user.BasicVocabulary = string(bytes)
+	err = user.UpdateVocabulary()
+	if err != nil {
+		msg = "数据库更新失败"
+		z.Error(fmt.Sprintf(msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
 
 	response.Success(c, vo)
 	return

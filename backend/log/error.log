@@ -8,3 +8,5 @@
 2023-06-15 16:13:39 	[31mERROR[0m	word/label.go:398	获取数据失败：获取数据失败 sheet Sheet1 does not exist
 2023-06-15 16:38:01 	[31mERROR[0m	word/label.go:412	数据不合法：数据不合法 %!s(<nil>)
 2023-06-15 16:39:50 	[31mERROR[0m	word/label.go:404	获取数据失败：获取数据失败 sheet 导出数据 does not exist
+2023-06-16 20:48:17 	[31mERROR[0m	word/label.go:320	内部服务器错误%!(EXTRA *json.SyntaxError=unexpected end of JSON input)
+2023-06-16 20:49:26 	[31mERROR[0m	word/label.go:332	数据库更新失败%!(EXTRA *mysql.MySQLError=Error 1054 (42S22): Unknown column 'basicVocabulary' in 'field list')
