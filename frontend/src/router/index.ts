@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/Home/HomeIndex.vue";
 import Vocabulary2 from "@/views/Home/Vocabulary2.vue";
+import ResultHash from "@/views/Home/ResultHash.vue";
 // class meta {
 //   isAuth: boolean;
 //   title: string;
@@ -29,6 +30,16 @@ const router = createRouter({
       path: "/index2",
       name: "Home2",
       component: Vocabulary2,
+      props:true,
+      meta: {
+        isAuth: false,
+        title: "Blog",
+      },
+    },
+    {
+      path: "/resulthash",
+      name: "resulthash",
+      component: ResultHash,
       props:true,
       meta: {
         isAuth: false,

@@ -104,7 +104,7 @@ const sendData = async () => {
 }
 
 .el-card {
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 .checkbox-row {
@@ -132,8 +132,8 @@ const sendData = async () => {
   background-size: cover;
   background-position: center;
   width: 8000px;
-  height: 600px;
-  margin-top: 60px;
+  //height: 600px;
+  //margin-top: 60px;
   border-radius: 50px;
 }
 

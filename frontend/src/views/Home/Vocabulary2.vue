@@ -51,7 +51,7 @@ const parsedResult = computed(() => {
 });
 
 const route = useRoute();
-
+const router = useRouter();
 const checkboxOptions = ref<CheckboxOption[]>([]);
 
 const initializeOptions = () => {
@@ -74,11 +74,6 @@ const checkboxRows = computed(() => {
   }
   return rows;
 });
-
-const updateValue = (item: CheckboxOption) => {
-  item.checked = !item.checked;
-};
-
 const sendData = async () => {
   const selectedOptions = checkboxOptions.value.map((item) => ({
     id: item.id,
@@ -92,8 +87,13 @@ const sendData = async () => {
     const response = await axios.post("/api/basic-api/word/getVocabulary", requestData, {
       headers: { Authorization: `${token}` }
     });
-
-    console.log(response.data.result);
+    router.push({
+      name: 'resulthash',
+      query: {
+        data: response.data.result.toString()
+      }
+    }
+    )
   } catch (error) {
     console.error(error);
   }
@@ -108,7 +108,7 @@ const sendData = async () => {
 }
 
 .el-card {
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 .checkbox-row {
@@ -138,8 +138,8 @@ const sendData = async () => {
   background-size: cover;
   background-position: center;
   width: 8000px;
-  height: 600px;
-  margin-top: 60px;
+  // height: 600px;
+  // margin-top: 60px;
   border-radius: 50px;
 }
 
