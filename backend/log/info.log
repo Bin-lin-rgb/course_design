@@ -271,3 +271,15 @@
 2023-06-15 17:37:38 	[34mINFO[0m	common/init.go:103	mysql connected
 2023-06-15 17:37:38 	[34mINFO[0m	backend/main.go:56	listening8080
 >>>>>>> e350ab078056a9ba125faeaf76fed75c698f29db
+2023-06-16 20:06:12 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-16 20:06:13 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-16 20:06:13 	[34mINFO[0m	backend/main.go:56	listening8080
+2023-06-16 20:10:44 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-16 20:10:44 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-16 20:10:44 	[34mINFO[0m	backend/main.go:56	listening8080
+2023-06-16 20:26:25 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-16 20:26:26 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-16 20:26:26 	[34mINFO[0m	backend/main.go:56	listening8080
+2023-06-16 20:28:23 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-16 20:28:24 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-16 20:28:24 	[34mINFO[0m	backend/main.go:56	listening8080

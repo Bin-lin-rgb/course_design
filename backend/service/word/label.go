@@ -453,8 +453,8 @@ func BatchProcess(c *gin.Context) {
 func EstimateVocabulary(list []Wordbook2) int {
 	// 设置抽样参数
 	numLayers := 10
-	totalWords := 54000
-	maxWordRank := int(list[len(list)-1].ID)
+	//totalWords := 54000
+	totalWords := int(list[len(list)-1].ID)
 
 	// 词汇太少了，无法估算
 	if len(list) < numLayers {
@@ -469,7 +469,7 @@ func EstimateVocabulary(list []Wordbook2) int {
 	}
 
 	// 定义层次的得分权重
-	knownWeights := []float64{1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4}
+	knownWeights := []float64{2.0, 2.1, 2.2, 2.3, 2.35, 2.4, 2.45, 2.5, 2.6, 2.7}
 
 	// 定义层次系数
 	//levelCoefficient := []float64{0.95, 0.8, 0.85, 0.8, 0.75, 0.7}
@@ -482,26 +482,26 @@ func EstimateVocabulary(list []Wordbook2) int {
 		boundaries[i] = boundaries[i-1] + boundary
 	}
 
-	maxNumLayers := 0
-	for i := 0; i < len(boundaries); i++ {
-		if boundaries[i] > maxWordRank {
-			maxNumLayers = i
-			break
-		}
-	}
+	//maxNumLayers := 0
+	//for i := 0; i < len(boundaries); i++ {
+	//	if boundaries[i] > maxWordRank {
+	//		maxNumLayers = i
+	//		break
+	//	}
+	//}
 
 	totalKnownWeights := 0.0
-	for i := 0; i < maxNumLayers; i++ {
+	for i := 0; i < numLayers; i++ {
 		totalKnownWeights += knownWeights[i]
 	}
 
 	// 计算每个层次有多少单词认识 = 认识率
-	knownPers := make([]float64, maxNumLayers)
+	knownPers := make([]float64, numLayers)
 	totalPer := 0.0
 	curId := 0
 	length := len(list)
 
-	for i := 0; i < maxNumLayers; i++ {
+	for i := 0; i < numLayers; i++ {
 		tmp := curId
 		knownCount := 0
 		layerBoundaryStart := boundaries[i]
@@ -523,15 +523,15 @@ func EstimateVocabulary(list []Wordbook2) int {
 		}
 	}
 
-	totalPer = totalPer / float64(maxNumLayers)
+	totalPer = totalPer / float64(numLayers)
 	if totalPer == 0 {
 		return 20
 	}
 
 	// 根据认识率的得分权重计算每个层级的得分
-	knownScores := make([]float64, maxNumLayers)
+	knownScores := make([]float64, numLayers)
 	totalScore := 0.0
-	for i := 0; i < maxNumLayers; i++ {
+	for i := 0; i < numLayers; i++ {
 		knownScores[i] = knownPers[i] * (knownWeights[i] / totalKnownWeights)
 		totalScore += knownScores[i]
 	}
