@@ -19,3 +19,12 @@ type Wordbook struct {
 	ID   uint   `json:"id" gorm:"primarykey"`
 	Word string `json:"word"`
 }
+
+// BatchProcessRecord 批量处理记录
+type BatchProcessRecord struct {
+	gorm.Model
+	WordListIDs  string `json:"wordListIds"`
+	MyVocabulary int    `json:"myVocabulary"`
+	Vocabulary   int    `json:"vocabulary"`
+	Difference   int    `json:"difference"`
+}

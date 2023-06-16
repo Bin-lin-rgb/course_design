@@ -1,4 +1,7 @@
 <template>
+  <header>
+    <img src="@/assets/DrinkUpTheSea.png" @click="gotoHome">
+  </header>
   <div class="container">
     <section>
       <div class="login-box">
@@ -253,6 +256,10 @@ function GoToErr() {
 onBeforeUnmount(() => {
   clearTimeout(timer);
 });
+
+function gotoHome() {
+  router.push("/index");
+}
 </script>
 
 <style scoped>
@@ -272,7 +279,7 @@ section {
 }
 .login-box {
   position: absolute;
-  left: 50%;
+  left: 30%;
   top: 50%;
   transform: translate(-50%, -50%);
   width: 975px;
@@ -547,4 +554,8 @@ section {
 :deep(.el-form-item__error) {
   top: 120%;
 }
+/* .container {
+  background-image: url('@/assets/img/loginbg.jpeg');
+} */
+
 </style>

@@ -22,6 +22,7 @@ func main() {
 
 	v1 := router.Group("/login-api")
 	v2 := router.Group("/basic-api")
+	v3 := router.Group("/batch-api")
 
 	v1.Use()
 	{
@@ -42,6 +43,8 @@ func main() {
 		v2.POST("/word/postList1", word.JudgeUserWordLevel)
 		v2.POST("/word/getVocabulary", word.CalculateVocabulary)
 	}
+
+	v3.POST("/word/batchProcess", word.BatchProcess)
 
 	server := &http.Server{
 		Addr:           ":" + conf.GlobalConfig.WebSever.HttpsListenPort,

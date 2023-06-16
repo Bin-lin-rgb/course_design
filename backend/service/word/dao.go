@@ -15,9 +15,18 @@ func (w *Wordbook) GetWordListByWord() (wordList Wordbook, err error) {
 	return wordList, result.Error
 }
 
-func GetWordListByWordArray(list []string) (wordList []Wordbook, err error) {
+type Wordbook2 struct {
+	Wordbook
+	Known string `json:"known"`
+}
+
+func GetWordListByWordArray(list []string) (wordList2 []Wordbook2, err error) {
+	var wordList []Wordbook
 	result := db.Model(&Wordbook{}).Select("id,word").Where("word in ?", list).Find(&wordList)
-	return wordList, result.Error
+	for _, v := range wordList {
+		wordList2 = append(wordList2, Wordbook2{v, ""})
+	}
+	return wordList2, result.Error
 }
 
 func (u *UserInfo) GetUserInfoByUsername() (users []UserInfo, err error) {

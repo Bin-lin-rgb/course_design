@@ -1,2 +1,10 @@
 2023-06-13 20:20:07 	[31mERROR[0m	utils/middleware.go:23	获取 token 失败
 2023-06-13 20:20:33 	[31mERROR[0m	utils/middleware.go:23	获取 token 失败
+2023-06-13 22:22:05 	[31mERROR[0m	utils/middleware.go:23	获取 token 失败
+2023-06-13 22:22:18 	[31mERROR[0m	word/label.go:108	请求不合法:EOF,请求的参数:{WordList:[]}
+2023-06-13 22:22:38 	[31mERROR[0m	word/label.go:108	请求不合法:EOF,请求的参数:{WordList:[]}
+2023-06-14 10:32:11 	[31mERROR[0m	utils/middleware.go:23	获取 token 失败
+2023-06-15 16:13:19 	[31mERROR[0m	word/label.go:337	文件上传失败:http: no such file
+2023-06-15 16:13:39 	[31mERROR[0m	word/label.go:398	获取数据失败：获取数据失败 sheet Sheet1 does not exist
+2023-06-15 16:38:01 	[31mERROR[0m	word/label.go:412	数据不合法：数据不合法 %!s(<nil>)
+2023-06-15 16:39:50 	[31mERROR[0m	word/label.go:404	获取数据失败：获取数据失败 sheet 导出数据 does not exist
