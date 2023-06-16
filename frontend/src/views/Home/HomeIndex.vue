@@ -2,15 +2,13 @@
   <CommHeader />
   <div class="common-layout">
     <el-card class="box-card">
-
       <el-form-item>
         <h1 class="Tips">Step 1 of 2: test your broad vocab level</h1>
         <el-divider />
       </el-form-item>
       <el-container class="container">
         <el-header>Check the box if you know at least one definition for a word. If you’re not sure about the exact
-          meaning,
-          leave it blank.</el-header>
+          meaning, leave it blank.</el-header>
       </el-container>
       <div>
         <div class="checkbox-row" v-for="(row, index) in checkboxRows" :key="index">
@@ -20,8 +18,7 @@
           </el-checkbox>
         </div>
       </div>
-      <el-button type="primary" @click="sendData">Continute</el-button>
-      <!-- <button @click="getList1">刷新单词列表</button> -->
+      <el-button type="primary" @click="sendData">Continue</el-button>
     </el-card>
   </div>
 </template>
@@ -32,6 +29,10 @@ import { ref, computed, onMounted } from 'vue';
 import axios from "axios";
 import { GetWordList1 } from '@/utils/api/wordBook';
 
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+
+const router = useRouter();
 interface CheckboxOption {
   id: number;
   word: string;
@@ -73,15 +74,26 @@ const sendData = async () => {
     known: item.checked ? 1 : 0, // 将布尔值转换为数值
   }));
 
-  console.log(selectedOptions);//往后端传的数组
-
+  //console.log(selectedOptions); // 往后端传的数组
+  const requestData = { WordList: selectedOptions };
   try {
-    const response = await axios.post('/api/sendData', selectedOptions);
-    console.log(response.data);
+    const userStore = useUserStore();
+    const token = userStore.token;
+    const response = await axios.post('/api/basic-api/word/postList1', requestData, {
+      headers: { Authorization: `${token}` }
+
+    });
+
+    const ResResult: any = response.data.result;
+    router.push({
+      name: 'Home2',
+      params: { StringWordList: JSON.stringify(ResResult) }, // 将数组转换为字符串进行传递
+    });
   } catch (error) {
     console.error(error);
   }
 };
+
 </script>
 
 <style scoped lang="less">
@@ -101,7 +113,7 @@ const sendData = async () => {
 }
 
 .el-button {
-  margin-left: 350px;
+  margin-left: 500px;
 }
 
 .checkbox-item {
@@ -115,10 +127,8 @@ const sendData = async () => {
   font-size: 12px;
 }
 
-
 .common-layout {
   background-color: rgb(228, 237, 237);
-  // background-image: url('@/assets/img/动态图.jpg');
   background-size: cover;
   background-position: center;
   width: 8000px;
@@ -127,38 +137,7 @@ const sendData = async () => {
   border-radius: 50px;
 }
 
-.continue-test {
-  left: 5%;
-  top: 7%;
-  background: linear-gradient(to bottom, #8ab7ee, #2582ee);
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 25px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
-  transition: all 0.3s ease-in-out;
-}
-
-.list-1 {
-  left: 20%;
-  top: 7%;
-  background: linear-gradient(to bottom, #8ab7ee, #2582ee);
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 25px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
-  transition: all 0.3s ease-in-out;
-}
-
 .container {
   left: 3%;
-}</style>
+}
+</style>
