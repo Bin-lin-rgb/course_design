@@ -1,7 +1,6 @@
 <template>
   <CommHeader />
   <div class="common-layout">
-<<<<<<< HEAD
     <el-card class="box-card">
 
       <el-form-item>
@@ -24,26 +23,6 @@
       <el-button type="primary" @click="sendData">Continute</el-button>
       <!-- <button @click="getList1">刷新单词列表</button> -->
     </el-card>
-=======
-    <el-form-item>
-      <h1 style="left: 5%;">Step 1 of 2: test your broad vocab level</h1>
-      <el-divider />
-    </el-form-item>
-    <el-container class="container">
-      <el-header>Check the box if you know at least one definition for a word. If you’re not sure about the exact meaning,
-        leave it blank.</el-header>
-    </el-container>
-    <div>
-      <div class="checkbox-row" v-for="(row, index) in checkboxRows" :key="index">
-        <el-checkbox class="checkbox-item" v-for="item in row" :key="item.id" v-model="item.checked"
-          @change="updateValue(item)">
-          <span class="checkbox-label"> {{ item.label }}</span>
-        </el-checkbox>
-      </div>
-    </div>
-    <button class="continue-test" @click="sendData">继续测试</button>
-    <button class="list-1" @click="aaa">List1</button>
->>>>>>> e350ab078056a9ba125faeaf76fed75c698f29db
   </div>
 </template>
 
@@ -111,17 +90,20 @@ const sendData = async () => {
 .Tips {
   margin-top: 10px;
 }
-.el-card{
+
+.el-card {
   margin-top: 100px;
 }
+
 .checkbox-row {
   display: flex;
   left: 5%;
 }
 
-.el-button{
-  margin-left:350px;
+.el-button {
+  margin-left: 350px;
 }
+
 .checkbox-item {
   flex: 1;
   margin-right: 10px;
@@ -131,25 +113,23 @@ const sendData = async () => {
 
 .checkbox-label {
   font-size: 12px;
-<<<<<<< HEAD
-}</style>
-=======
 }
 
-.common-layout{
+
+.common-layout {
   background-color: rgb(228, 237, 237);
   // background-image: url('@/assets/img/动态图.jpg');
   background-size: cover;
   background-position: center;
   width: 8000px;
   height: 600px;
-  margin-top: 60px; 
+  margin-top: 60px;
   border-radius: 50px;
 }
 
-.continue-test{
+.continue-test {
   left: 5%;
-  top:7%;
+  top: 7%;
   background: linear-gradient(to bottom, #8ab7ee, #2582ee);
   border: none;
   color: white;
@@ -163,9 +143,9 @@ const sendData = async () => {
   transition: all 0.3s ease-in-out;
 }
 
-.list-1{
+.list-1 {
   left: 20%;
-  top:7%;
+  top: 7%;
   background: linear-gradient(to bottom, #8ab7ee, #2582ee);
   border: none;
   color: white;
@@ -178,9 +158,7 @@ const sendData = async () => {
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease-in-out;
 }
-.container{
-  left: 3%;
-}
 
-</style>
->>>>>>> e350ab078056a9ba125faeaf76fed75c698f29db
+.container {
+  left: 3%;
+}</style>
