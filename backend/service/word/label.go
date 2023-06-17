@@ -486,16 +486,156 @@ func BatchProcess(c *gin.Context) {
 	return
 }
 
+func BatchProcess2(c *gin.Context) {
+	var (
+		msg string
+		err error
+	)
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		msg = "文件上传失败"
+		z.Error(fmt.Sprintf("%s:%s", msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	//获取文件名
+	fileName := file.Filename
+
+	if file.Size > 10*1024*1024 {
+		msg = "文件过大"
+		z.Error(fmt.Sprintf("文件过大:%s", msg))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	newUUID, _ := uuid.NewUUID()
+
+	// 文件后缀
+	fileSuffix := path.Ext(fileName)
+	// 路径
+	dst := path.Join(UploadFile, newUUID.String()+fileSuffix)
+
+	// 先判断目录是否存在，如果目录不存在则创建
+	if _, err := os.Stat(UploadFile); os.IsNotExist(err) {
+		// 目录不存在，创建目录
+		if err := os.MkdirAll(UploadFile, os.ModePerm); err != nil {
+			msg = "文件夹创建失败"
+			z.Error(fmt.Sprintf("文件夹创建失败：%s %s", msg, err))
+			response.Err(c, http.StatusOK, msg, nil)
+			return
+		}
+		z.Info("Directory created successfully!")
+	}
+
+	if err := c.SaveUploadedFile(file, dst); err != nil {
+		msg = "文件保存失败"
+		z.Error(fmt.Sprintf("保存失败：%s %s", msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	f, err := excelize.OpenFile(dst)
+	if err != nil {
+		msg = "文件打开失败"
+		z.Error(fmt.Sprintf("文件打开失败：%s %s", msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	defer func() {
+		if err := f.Close(); err != nil {
+			z.Error(fmt.Sprintf("关闭导入的文件失败：%s", err))
+		}
+		if err := os.Remove(dst); err != nil {
+			z.Error(fmt.Sprintf("删除导入的文件失败：%s", err))
+		}
+	}()
+
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		msg = "获取数据失败"
+		z.Error(fmt.Sprintf("获取数据失败：%s %s", msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	// 是否为 3 的倍数行
+	if (len(rows)+1)%3 != 0 {
+		msg = "数据不合法"
+		z.Error(fmt.Sprintf("数据不合法：%s %s", msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	var res []resBatchProcessItem
+
+	round := 1
+	for i := 0; i < len(rows); i = i + 3 {
+
+		list, err := GetWordListByWordArray(rows[i])
+		if err != nil {
+			msg = "获取数据失败"
+			z.Error(fmt.Sprintf("获取数据失败：%s %s", msg, err))
+			response.Err(c, http.StatusOK, msg, nil)
+			return
+		}
+
+		// 拼接 known 属性
+		for j := 0; j < len(list); j++ {
+			list[j].Known = rows[i+1][j]
+		}
+
+		// 此处开始估算词汇量
+		vo := EstimateVocabulary(list)
+
+		item := resBatchProcessItem{
+			Round:           round,
+			TestVocabulary:  vo,
+			CalculatedWords: len(list),
+		}
+		res = append(res, item)
+
+		round++
+	}
+
+	// 写回文件
+	start := 3
+	for i := 0; i < len(res); i++ {
+		f.SetCellValue("Sheet1", fmt.Sprintf("A%d", start), res[i].Round)
+		f.SetCellValue("Sheet1", fmt.Sprintf("B%d", start), res[i].TestVocabulary)
+		f.SetCellValue("Sheet1", fmt.Sprintf("C%d", start), res[i].CalculatedWords)
+		start = start + 3
+	}
+
+	// 保存修改后的Excel文件
+
+	// 路径
+	newUUID2, _ := uuid.NewUUID()
+	outputPath := path.Join(UploadFile, newUUID2.String()+fileSuffix)
+	if err := f.SaveAs(outputPath); err != nil {
+		msg = "文件保存失败"
+		z.Error(fmt.Sprintf("文件保存失败：%s %s", msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	// 返回生成的Excel文件
+	c.File(outputPath)
+
+	//response.Success(c, res)
+	return
+}
+
 func EstimateVocabulary(list []Wordbook2) int {
 	// 设置抽样参数
-	numLayers := 10
-	//totalWords := 54000
-	totalWords := int(list[len(list)-1].ID)
-
-	// 词汇太少了，无法估算
+	numLayers := 10 // 词汇太少了，无法估算
 	if len(list) < numLayers {
 		return 20
 	}
+	//totalWords := 54000
+	totalWords := int(list[len(list)-1].ID)
 
 	// 定义层次权重，采用指数衰减的方式
 	weights := []float64{1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.1, 0.1}
@@ -516,19 +656,6 @@ func EstimateVocabulary(list []Wordbook2) int {
 	for i := 1; i <= numLayers; i++ {
 		boundary := int(math.Round(float64(totalWords) * (weights[i-1] / totalWeight)))
 		boundaries[i] = boundaries[i-1] + boundary
-	}
-
-	//maxNumLayers := 0
-	//for i := 0; i < len(boundaries); i++ {
-	//	if boundaries[i] > maxWordRank {
-	//		maxNumLayers = i
-	//		break
-	//	}
-	//}
-
-	totalKnownWeights := 0.0
-	for i := 0; i < numLayers; i++ {
-		totalKnownWeights += knownWeights[i]
 	}
 
 	// 计算每个层次有多少单词认识 = 认识率
@@ -553,21 +680,42 @@ func EstimateVocabulary(list []Wordbook2) int {
 		if curId > 0 {
 			knownPer := float64(knownCount) / float64(curId-tmp)
 			knownPers[i] = knownPer
-			totalPer += knownPer
 		} else {
 			knownPers[i] = 0.0
 		}
 	}
 
-	totalPer = totalPer / float64(numLayers)
+	// 避免某些中间层级没有单词，导致平均认识率加了NAN，为0，这里做一下处理
+	skip := 0
+	for _, num := range knownPers {
+		if math.IsNaN(num) {
+			skip++
+			continue // 跳过NaN值
+		}
+		totalPer += num
+	}
+
+	totalPer = totalPer / float64(numLayers-skip)
 	if totalPer == 0 {
 		return 20
+	}
+
+	totalKnownWeights := 0.0
+	for i := 0; i < len(knownPers); i++ {
+		if math.IsNaN(knownPers[i]) {
+			skip++
+			continue // 跳过NaN值
+		}
+		totalKnownWeights += knownWeights[i]
 	}
 
 	// 根据认识率的得分权重计算每个层级的得分
 	knownScores := make([]float64, numLayers)
 	totalScore := 0.0
 	for i := 0; i < numLayers; i++ {
+		if math.IsNaN(knownPers[i]) {
+			continue // 跳过NaN值
+		}
 		knownScores[i] = knownPers[i] * (knownWeights[i] / totalKnownWeights)
 		totalScore += knownScores[i]
 	}

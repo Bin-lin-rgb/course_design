@@ -10,3 +10,12 @@
 2023-06-15 16:39:50 	[31mERROR[0m	word/label.go:404	获取数据失败：获取数据失败 sheet 导出数据 does not exist
 2023-06-16 20:48:17 	[31mERROR[0m	word/label.go:320	内部服务器错误%!(EXTRA *json.SyntaxError=unexpected end of JSON input)
 2023-06-16 20:49:26 	[31mERROR[0m	word/label.go:332	数据库更新失败%!(EXTRA *mysql.MySQLError=Error 1054 (42S22): Unknown column 'basicVocabulary' in 'field list')
+2023-06-17 20:19:08 	[31mERROR[0m	word/label.go:542	文件打开失败：文件打开失败 zip: not a valid zip file
+2023-06-17 20:21:44 	[31mERROR[0m	word/label.go:542	文件打开失败：文件打开失败 zip: not a valid zip file
+2023-06-17 20:34:04 	[31mERROR[0m	word/label.go:567	数据不合法：数据不合法 %!s(<nil>)
+2023-06-17 20:35:00 	[31mERROR[0m	word/label.go:567	数据不合法：数据不合法 %!s(<nil>)
+2023-06-17 20:35:43 	[31mERROR[0m	word/label.go:567	数据不合法：数据不合法 %!s(<nil>)
+2023-06-17 20:36:27 	[31mERROR[0m	word/label.go:567	数据不合法：数据不合法 %!s(<nil>)
+2023-06-17 21:38:38 	[31mERROR[0m	word/label.go:288	参数太少，请求不合法:%!s(<nil>),请求的参数太少啦:{WordList:[]}
+2023-06-17 21:50:56 	[31mERROR[0m	word/label.go:288	参数太少，请求不合法:%!s(<nil>),请求的参数太少啦:{WordList:[]}
+2023-06-17 22:47:39 	[31mERROR[0m	utils/middleware.go:23	获取 token 失败

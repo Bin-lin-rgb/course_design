@@ -230,9 +230,9 @@ func GetUserInfo(c *gin.Context) {
 		Username        string `json:"username,omitempty"`
 		Account         string `json:"account,omitempty"`
 		Password        string `json:"password,omitempty"`
-		FourGrade       string `json:"fourGrade,omitempty"`
-		SixGrade        string `json:"sixGrade,omitempty"`
-		BasicVocabulary string `json:"basicVocabulary,omitempty"`
+		FourGrade       string `json:"fourGrade"`
+		SixGrade        string `json:"sixGrade"`
+		BasicVocabulary string `json:"basicVocabulary"`
 	}{
 		UserId:          userID.(int64),
 		Username:        user.Username,

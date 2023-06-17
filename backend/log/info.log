@@ -305,3 +305,185 @@
 2023-06-16 20:57:09 	[34mINFO[0m	common/init.go:103	mysql connected
 2023-06-16 20:57:09 	[34mINFO[0m	backend/main.go:56	listening8080
 2023-06-16 20:57:12 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-17 20:15:15 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 20:15:16 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 20:15:16 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 20:27:52 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 20:27:53 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 20:27:53 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 20:33:42 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 20:33:42 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 20:33:42 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 20:35:35 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 20:35:35 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 20:35:35 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 20:36:44 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 20:36:44 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 20:36:44 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 20:41:57 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 20:41:58 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 20:41:58 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 20:49:33 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 20:49:33 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 20:49:33 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 21:06:05 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 21:06:05 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 21:06:05 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 21:10:27 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 21:10:28 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 21:10:28 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 21:15:27 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 21:15:28 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 21:15:28 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 21:20:25 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-17 21:20:25 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-17 21:20:25 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-17 21:36:45 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:36:45 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:38:31 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:38:31 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:38:38 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:41:09 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:41:09 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:41:30 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:41:30 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:43:11 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:43:52 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:43:52 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:44:05 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:44:05 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:50:56 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:52:12 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:52:21 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:52:21 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:52:28 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:52:28 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:53:29 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:53:29 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:53:47 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:53:47 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:59:10 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:59:13 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:59:13 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:59:21 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:59:21 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:59:41 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 21:59:41 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:04:33 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:04:34 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:04:34 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:04:43 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:04:43 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:04:47 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:04:47 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:07:02 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:07:05 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:07:05 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:07:13 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:07:13 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:07:22 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:07:22 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:08:58 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:08:58 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:09:01 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:09:01 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:09:05 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:09:05 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:09:54 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:09:54 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:00 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:00 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:06 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:06 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:39 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:39 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:42 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:42 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:44 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:44 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:57 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:10:57 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:00 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:00 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:02 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:04 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:04 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:07 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:07 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:10 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:10 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:28 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:29 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:29 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:31 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:31 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:34 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:11:34 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:12:24 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:12:24 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:12:26 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:12:26 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:12:29 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:12:29 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:13:32 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:13:32 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:13:35 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:13:35 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:13:38 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:13:38 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:20:49 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:20:49 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:20:51 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:20:51 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:20:54 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:20:54 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:24:29 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:24:29 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:24:31 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:24:31 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:24:34 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:24:34 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:27:48 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:27:48 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:27:50 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:27:50 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:27:53 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:27:53 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:27:55 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:27:55 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:27:58 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:27:58 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:39 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:39 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:40 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:40 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:43 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:43 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:51 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:51 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:52 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:52 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:55 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:28:55 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:29:08 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:29:09 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:29:09 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:29:11 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:29:11 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:29:15 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:29:15 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:29:18 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:29:18 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:40:25 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:41:21 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:41:21 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:41:24 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:41:24 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:47:23 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-17 22:47:45 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：2
+2023-06-17 22:50:05 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:50:05 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:50:17 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:50:17 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:50:22 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-17 22:50:22 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6

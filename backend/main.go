@@ -44,7 +44,8 @@ func main() {
 		v2.POST("/word/getVocabulary", word.CalculateVocabulary)
 	}
 
-	v3.POST("/word/batchProcess", word.BatchProcess)
+	v3.POST("/word/VerifyAlgorithm", word.BatchProcess)
+	v3.POST("/word/batchProcess", word.BatchProcess2)
 
 	server := &http.Server{
 		Addr:           ":" + conf.GlobalConfig.WebSever.HttpsListenPort,
