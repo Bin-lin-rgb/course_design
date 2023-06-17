@@ -38,6 +38,11 @@ interface CheckboxOption {
   word: string;
   checked: boolean; // 添加选中状态的属性
 }
+interface ResultItem {
+  id: number;
+  word: string;
+}//接收返回的数组
+type ResultArray = ResultItem[];
 
 const checkboxOptions = ref<CheckboxOption[]>([]);
 
@@ -84,7 +89,8 @@ const sendData = async () => {
 
     });
 
-    const ResResult: any = response.data.result;
+    const ResResult: ResultArray = response.data.result;
+    console.log("result",ResResult)
     router.push({
       name: 'Home2',
       params: { StringWordList: JSON.stringify(ResResult) }, // 将数组转换为字符串进行传递
