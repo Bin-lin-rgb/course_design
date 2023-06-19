@@ -59,19 +59,12 @@ const { StringWordList, StringWordList1 } = defineProps({
   },
 });
 
+const obj = JSON.parse(StringWordList1);
+
 const parsedResult = computed(() => {
   const result = JSON.parse(StringWordList || "[]") as {
     id: number;
     word: string;
-  }[];
-  return Array.isArray(result) ? result : [];
-});
-
-const parsedResult1 = computed(() => {
-  const result = JSON.parse(StringWordList1 || "[]") as {
-    id: number;
-    word: string;
-    known: number;
   }[];
   return Array.isArray(result) ? result : [];
 });
@@ -108,12 +101,10 @@ const sendData = async () => {
   }));
   const userStore = useUserStore();
   const token = userStore.token;
-  // result = selectedOptions + StringWordList1;
-  parsedResult1.value.forEach((item) => {
-    selectedOptions.push(item);
-  });
-  const requestData = { WordList: selectedOptions };
-  console.log(requestData);
+  
+  const concatenatedArray = [...selectedOptions, ...obj.WordList];
+  const requestData = { WordList: concatenatedArray };
+  // console.log(requestData)
   try {
     const response = await axios.post(
       "/api/basic-api/word/getVocabulary",
