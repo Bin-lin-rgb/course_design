@@ -299,6 +299,8 @@ func CalculateVocabulary(c *gin.Context) {
 		list[i].Known = strconv.Itoa(reqForm.WordList[i].Known)
 	}
 
+	sortByID(list)
+
 	vo := EstimateVocabulary(list)
 
 	userID, _ := c.Get("userID")
@@ -336,6 +338,17 @@ func CalculateVocabulary(c *gin.Context) {
 
 	response.Success(c, vo)
 	return
+}
+
+// 定义排序函数
+func sortByID(wordbooks []Wordbook2) {
+	// 自定义比较函数
+	less := func(i, j int) bool {
+		return wordbooks[i].ID < wordbooks[j].ID
+	}
+
+	// 使用排序函数对数组进行排序
+	sort.Slice(wordbooks, less)
 }
 
 func generateRandomNumbers(n, min, max int) []int {
