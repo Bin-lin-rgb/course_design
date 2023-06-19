@@ -19,3 +19,4 @@
 2023-06-17 21:38:38 	[31mERROR[0m	word/label.go:288	参数太少，请求不合法:%!s(<nil>),请求的参数太少啦:{WordList:[]}
 2023-06-17 21:50:56 	[31mERROR[0m	word/label.go:288	参数太少，请求不合法:%!s(<nil>),请求的参数太少啦:{WordList:[]}
 2023-06-17 22:47:39 	[31mERROR[0m	utils/middleware.go:23	获取 token 失败
+2023-06-19 22:09:47 	[31mERROR[0m	word/label.go:288	参数太少，请求不合法:%!s(<nil>),请求的参数太少啦:{WordList:[]}

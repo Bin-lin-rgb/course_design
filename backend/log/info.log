@@ -493,3 +493,13 @@
 2023-06-18 15:24:03 	[34mINFO[0m	common/init.go:73	start init mysql...
 2023-06-18 15:24:04 	[34mINFO[0m	common/init.go:103	mysql connected
 2023-06-18 15:24:04 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-19 22:08:35 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-19 22:08:35 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-19 22:08:35 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-19 22:09:23 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-19 22:09:23 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-19 22:09:26 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-19 22:09:26 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-19 22:09:45 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-19 22:09:45 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-19 22:09:47 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
