@@ -9,13 +9,23 @@
       </el-form-item>
       <el-container class="container">
         <el-header>
-          Use this larger list to calculate your vocab size with greater precision. Check the box if you know at least
-          one definition for a word.
+          Use this larger list to calculate your vocab size with greater
+          precision. Check the box if you know at least one definition for a
+          word.
         </el-header>
       </el-container>
       <div>
-        <div class="checkbox-row" v-for="(row, index) in checkboxRows" :key="index">
-          <el-checkbox class="checkbox-item" v-for="item in row" :key="item.id" v-model="item.checked">
+        <div
+          class="checkbox-row"
+          v-for="(row, index) in checkboxRows"
+          :key="index"
+        >
+          <el-checkbox
+            class="checkbox-item"
+            v-for="item in row"
+            :key="item.id"
+            v-model="item.checked"
+          >
             <span class="checkbox-label">{{ item.word }}</span>
           </el-checkbox>
         </div>
@@ -30,23 +40,39 @@ import CommHeader from "@/components/common/CommHeader.vue";
 import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
-import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/user';
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/user";
 interface CheckboxOption {
   id: number;
   word: string;
   checked: boolean;
 }
 
-const { StringWordList } = defineProps({
+const { StringWordList, StringWordList1 } = defineProps({
   StringWordList: {
+    type: String,
+    required: true,
+  },
+  StringWordList1: {
     type: String,
     required: true,
   },
 });
 
 const parsedResult = computed(() => {
-  const result = JSON.parse(StringWordList || '[]') as { id: number; word: string }[];
+  const result = JSON.parse(StringWordList || "[]") as {
+    id: number;
+    word: string;
+  }[];
+  return Array.isArray(result) ? result : [];
+});
+
+const parsedResult1 = computed(() => {
+  const result = JSON.parse(StringWordList1 || "[]") as {
+    id: number;
+    word: string;
+    known: number;
+  }[];
   return Array.isArray(result) ? result : [];
 });
 
@@ -82,18 +108,26 @@ const sendData = async () => {
   }));
   const userStore = useUserStore();
   const token = userStore.token;
+  // result = selectedOptions + StringWordList1;
+  parsedResult1.value.forEach((item) => {
+    selectedOptions.push(item);
+  });
   const requestData = { WordList: selectedOptions };
+  console.log(requestData);
   try {
-    const response = await axios.post("/api/basic-api/word/getVocabulary", requestData, {
-      headers: { Authorization: `${token}` }
-    });
-    router.push({
-      name: 'resulthash',
-      query: {
-        data: response.data.result.toString()
+    const response = await axios.post(
+      "/api/basic-api/word/getVocabulary",
+      requestData,
+      {
+        headers: { Authorization: `${token}` },
       }
-    }
-    )
+    );
+    router.push({
+      name: "resulthash",
+      query: {
+        data: response.data.result.toString(),
+      },
+    });
   } catch (error) {
     console.error(error);
   }
@@ -130,7 +164,6 @@ const sendData = async () => {
 .checkbox-label {
   font-size: 12px;
 }
-
 
 .common-layout {
   background-color: rgb(228, 237, 237);

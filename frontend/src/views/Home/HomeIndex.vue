@@ -7,13 +7,24 @@
         <el-divider />
       </el-form-item>
       <el-container class="container">
-        <el-header>Check the box if you know at least one definition for a word. If you’re not sure about the exact
-          meaning, leave it blank.</el-header>
+        <el-header
+          >Check the box if you know at least one definition for a word. If
+          you’re not sure about the exact meaning, leave it blank.</el-header
+        >
       </el-container>
       <div>
-        <div class="checkbox-row" v-for="(row, index) in checkboxRows" :key="index">
-          <el-checkbox class="checkbox-item" v-for="item in row" :key="item.id" :model-value="item.checked"
-            @update:model-value="updateValue(item, item.checked)">
+        <div
+          class="checkbox-row"
+          v-for="(row, index) in checkboxRows"
+          :key="index"
+        >
+          <el-checkbox
+            class="checkbox-item"
+            v-for="item in row"
+            :key="item.id"
+            :model-value="item.checked"
+            @update:model-value="updateValue(item, item.checked)"
+          >
             <span class="checkbox-label">{{ item.word }}</span>
           </el-checkbox>
         </div>
@@ -25,12 +36,12 @@
 
 <script lang="ts" setup>
 import CommHeader from "@/components/common/CommHeader.vue";
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from "vue";
 import axios from "axios";
-import { GetWordList1 } from '@/utils/api/wordBook';
+import { GetWordList1 } from "@/utils/api/wordBook";
 
-import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/user';
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/user";
 
 const router = useRouter();
 interface CheckboxOption {
@@ -41,7 +52,7 @@ interface CheckboxOption {
 interface ResultItem {
   id: number;
   word: string;
-}//接收返回的数组
+} //接收返回的数组
 type ResultArray = ResultItem[];
 
 const checkboxOptions = ref<CheckboxOption[]>([]);
@@ -52,11 +63,13 @@ onMounted(async () => {
 
 const getList1 = async () => {
   const res: any = await GetWordList1();
-  checkboxOptions.value = res.result.map((item: { id: number; word: string }) => ({
-    id: item.id,
-    word: item.word,
-    checked: false, // 初始化选中状态为false
-  }));
+  checkboxOptions.value = res.result.map(
+    (item: { id: number; word: string }) => ({
+      id: item.id,
+      word: item.word,
+      checked: false, // 初始化选中状态为false
+    })
+  );
 };
 
 const checkboxRows = computed(() => {
@@ -84,22 +97,27 @@ const sendData = async () => {
   try {
     const userStore = useUserStore();
     const token = userStore.token;
-    const response = await axios.post('/api/basic-api/word/postList1', requestData, {
-      headers: { Authorization: `${token}` }
-
-    });
+    const response = await axios.post(
+      "/api/basic-api/word/postList1",
+      requestData,
+      {
+        headers: { Authorization: `${token}` },
+      }
+    );
 
     const ResResult: ResultArray = response.data.result;
-    console.log("result",ResResult)
+    console.log("result", ResResult);
     router.push({
-      name: 'Home2',
-      params: { StringWordList: JSON.stringify(ResResult) }, // 将数组转换为字符串进行传递
+      name: "Home2",
+      params: {
+        StringWordList: JSON.stringify(ResResult),
+        StringWordList1: JSON.stringify(requestData),
+      }, // 将数组转换为字符串进行传递
     });
   } catch (error) {
     console.error(error);
   }
 };
-
 </script>
 
 <style scoped lang="less">
