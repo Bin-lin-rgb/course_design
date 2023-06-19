@@ -40,6 +40,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "http://43.139.40.48:9001",
+        // target: "http://43.139.40.48:9001",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
