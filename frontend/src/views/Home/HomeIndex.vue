@@ -106,7 +106,7 @@ const sendData = async () => {
     );
 
     const ResResult: ResultArray = response.data.result;
-    console.log("result", ResResult);
+    // console.log("JSON.stringify(requestData)", JSON.stringify(requestData));
     router.push({
       name: "Home2",
       params: {
