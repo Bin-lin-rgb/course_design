@@ -1,10 +1,24 @@
-FROM alpine:latest
+FROM golang:alpine as builder
 
-RUN mkdir "/app"
-RUN mkdir "/app/config"
+ENV GO111MODULE=on
+ENV GOPROXY=https://goproxy.cn,direct
 
-WORKDIR "/app"
-COPY course_design /app/
-COPY config.json /app/config/
+WORKDIR /home
+COPY . .
 
-ENTRYPOINT ["./course_design"]
+RUN go mod download
+RUN go build -o course_design main.go
+
+FROM alpine as runner
+ENV WORKDIR=/home
+WORKDIR $WORKDIR
+
+RUN apk add tzdata --no-cache \
+    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone \
+    && apk del tzdata
+
+COPY --from=builder $WORKDIR/course_design  $WORKDIR
+COPY --from=builder $WORKDIR/config  $WORKDIR/config
+
+CMD ["./course_design"]
