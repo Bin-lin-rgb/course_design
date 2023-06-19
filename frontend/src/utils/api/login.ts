@@ -21,11 +21,10 @@ export function getUserInfo() {
     url: `/api/basic-api/getUserInfo`,
   });
 }
-
-// export function updateProfile(data: any) {
-//   return request({
-//     url: `/api/v1/user/profile`,
-//     method: "put",
-//     data: data,
-//   });
-// }
+export function updateScore(data: any) {
+  return request({
+    url: `/api/basic-api/setGrade`,
+    method: "post",
+    data: data,
+  });
+}

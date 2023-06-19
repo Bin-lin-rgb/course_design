@@ -7,6 +7,8 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AButton: typeof import('@arco-design/web-vue')['Button']
+    ADivider: typeof import('@arco-design/web-vue')['Divider']
     ArticleItem: typeof import('./src/components/common/ArticleItem.vue')['default']
     ASpace: typeof import('@arco-design/web-vue')['Space']
     CommHeader: typeof import('./src/components/common/CommHeader.vue')['default']
@@ -27,7 +29,9 @@ declare module '@vue/runtime-core' {
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElMain: typeof import('element-plus/es')['ElMain']
+    ElOption: typeof import('element-plus/es')['ElOption']
     ElRow: typeof import('element-plus/es')['ElRow']
+    ElSelect: typeof import('element-plus/es')['ElSelect']
     ErrPage: typeof import('./src/components/common/ErrPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

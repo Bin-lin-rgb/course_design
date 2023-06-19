@@ -73,7 +73,7 @@ function Logout() {
     .then(() => {
       const userStore = useUserStore();
       userStore.clearToken();
-      router.go(0);
+      router.push("/");
       ElMessage({
         type: "success",
         message: "退出成功！",

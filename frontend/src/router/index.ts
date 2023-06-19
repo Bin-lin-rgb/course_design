@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/Home/HomeIndex.vue";
+import HomeStart from "@/views/Home/HomeStart.vue";
 import Vocabulary2 from "@/views/Home/Vocabulary2.vue";
 import ResultHash from "@/views/Home/ResultHash.vue";
 // class meta {
@@ -19,6 +20,15 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      name: "HomeStart",
+      component: HomeStart,
+      meta: {
+        isAuth: false,
+        title: "Blog",
+      },
+    },
+    {
+      path: "/index",
       name: "Home",
       component: Home,
       meta: {

@@ -240,7 +240,7 @@ const userBtnL = (formEl: any) => {
 
         // 必须延缓一段时间，避免持久化存储失败！
         timer = setTimeout(() => {
-          router.go(-1);
+          gotoHome1()
         }, 1000);
       });
     } else {
@@ -252,6 +252,10 @@ const userBtnL = (formEl: any) => {
 function GoToErr() {
   router.push("/NoFunction");
 }
+
+const gotoHome1 = () => {
+  router.push("/");
+};
 
 onBeforeUnmount(() => {
   clearTimeout(timer);
