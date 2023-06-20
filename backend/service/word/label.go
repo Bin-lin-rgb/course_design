@@ -201,15 +201,15 @@ func JudgeUserWordLevel(c *gin.Context) {
 		weights = []float64{1.0, 0.8, 0.6, 0.4, 0.2, 0.1}
 	} else if totalPer < 0.5 {
 		sampleSize = 60
-		wordsRange = 25000
+		wordsRange = 15000
 		weights = []float64{1.0, 0.8, 0.7, 0.6, 0.5, 0.4}
-	} else if totalPer < 0.7 {
+	} else if totalPer < 0.8 {
 		sampleSize = 80
-		wordsRange = 40000
+		wordsRange = 25000
 		weights = []float64{1.0, 0.9, 0.8, 0.7, 0.6, 0.5}
 	} else {
 		sampleSize = 100
-		wordsRange = 54000
+		wordsRange = 41000
 		weights = []float64{1.0, 0.9, 0.9, 0.9, 0.8, 0.7}
 	}
 
