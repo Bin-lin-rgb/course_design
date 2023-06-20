@@ -612,6 +612,32 @@ func BatchProcess2(c *gin.Context) {
 		round++
 	}
 
+	rule := map[int]string{
+		0: "不认识比例10%，长度100",
+		1: "不认识比例20%，长度100",
+		2: "不认识比例30%，长度100",
+		3: "不认识比例10%，长度200",
+		4: "不认识比例20%，长度200",
+		5: "不认识比例30%，长度200",
+		6: "不认识比例10%，长度300",
+		7: "不认识比例20%，长度300",
+		8: "不认识比例30%，长度300",
+	}
+
+	for i := 0; i < len(res)/100; i = i + 1 {
+		var data []float64
+		for j := 0; j < 100; j++ {
+			data = append(data, float64(res[i*100+j].TestVocabulary))
+		}
+		// 计算平均数
+		mean := calculateMean(data)
+		fmt.Printf("%v的平均数: %.2f\n", rule[i], mean)
+
+		// 计算方差
+		variance := calculateVariance(data, mean)
+		fmt.Printf("%v的方差: %.2f\n", rule[i], variance)
+	}
+
 	// 写回文件
 	start := 3
 	for i := 0; i < len(res); i++ {
@@ -638,6 +664,30 @@ func BatchProcess2(c *gin.Context) {
 
 	//response.Success(c, res)
 	return
+}
+
+// 计算平均数
+func calculateMean(data []float64) float64 {
+	sum := 0.0
+	n := len(data)
+
+	for _, val := range data {
+		sum += val
+	}
+
+	return sum / float64(n)
+}
+
+// 计算方差
+func calculateVariance(data []float64, mean float64) float64 {
+	sum := 0.0
+	n := len(data)
+
+	for _, val := range data {
+		sum += math.Pow(val-mean, 2)
+	}
+
+	return sum / float64(n)
 }
 
 func EstimateVocabulary(list []Wordbook2) int {
