@@ -9,6 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AButton: typeof import('@arco-design/web-vue')['Button']
     ADivider: typeof import('@arco-design/web-vue')['Divider']
+    AResult: typeof import('@arco-design/web-vue')['Result']
     ArticleItem: typeof import('./src/components/common/ArticleItem.vue')['default']
     ASpace: typeof import('@arco-design/web-vue')['Space']
     CommHeader: typeof import('./src/components/common/CommHeader.vue')['default']

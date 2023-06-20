@@ -24,7 +24,7 @@ const router = createRouter({
       component: HomeStart,
       meta: {
         isAuth: false,
-        title: "Blog",
+        title: "词汇量测试首页",
       },
     },
     {
@@ -32,8 +32,8 @@ const router = createRouter({
       name: "Home",
       component: Home,
       meta: {
-        isAuth: false,
-        title: "Blog",
+        isAuth: true,
+        title: "词汇量测试列表1",
       },
     },
     {
@@ -42,8 +42,8 @@ const router = createRouter({
       component: Vocabulary2,
       props:true,
       meta: {
-        isAuth: false,
-        title: "Blog",
+        isAuth: true,
+        title: "词汇量测试列表2",
       },
     },
     {
@@ -52,20 +52,17 @@ const router = createRouter({
       component: ResultHash,
       props:true,
       meta: {
-        isAuth: false,
-        title: "Blog",
+        isAuth: true,
+        title: "词汇量测试结果",
       },
     },
     {
       path: "/login",
       name: "Login",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import("@/views/UserInfo/UserLogin.vue"),
       meta: {
         isAuth: false,
-        title: "登录",
+        title: "词汇量测试->登录",
       },
     },
     {
