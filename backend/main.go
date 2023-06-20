@@ -46,6 +46,8 @@ func main() {
 
 	v3.POST("/word/VerifyAlgorithm", word.BatchProcess)
 	v3.POST("/word/batchProcess", word.BatchProcess2)
+	v3.GET("/coefficient/fourGrade", word.GetCoefficientFourGrade)
+	v3.GET("/coefficient/sixGrade", word.GetCoefficientSixGrade)
 
 	server := &http.Server{
 		Addr:           ":" + conf.GlobalConfig.WebSever.HttpsListenPort,

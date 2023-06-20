@@ -503,3 +503,19 @@
 2023-06-19 22:09:45 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
 2023-06-19 22:09:45 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
 2023-06-19 22:09:47 	[34mINFO[0m	utils/middleware.go:35	请求接口的用户ID：6
+2023-06-20 14:32:31 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-20 14:32:33 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-20 14:32:33 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-20 14:59:18 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-20 14:59:20 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-20 14:59:20 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-20 15:01:00 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-20 15:01:02 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-20 15:01:02 	[34mINFO[0m	backend/main.go:57	listening8080
+2023-06-20 15:37:14 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-20 15:37:16 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-20 15:38:01 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-20 15:38:03 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-20 15:38:36 	[34mINFO[0m	common/init.go:73	start init mysql...
+2023-06-20 15:38:38 	[34mINFO[0m	common/init.go:103	mysql connected
+2023-06-20 15:38:38 	[34mINFO[0m	backend/main.go:59	listening8080

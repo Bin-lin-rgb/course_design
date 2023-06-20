@@ -55,3 +55,13 @@ func (u *UserInfo) UpdateVocabulary() error {
 	})
 	return result.Error
 }
+
+func GetFourGradeAndVocabulary() (users []UserInfo, err error) {
+	err = db.Model(&UserInfo{}).Select("id,four_grade,basic_vocabulary").Find(&users).Error
+	return users, err
+}
+
+func GetSixGradeAndVocabulary() (users []UserInfo, err error) {
+	err = db.Model(&UserInfo{}).Select("id,six_grade,basic_vocabulary").Find(&users).Error
+	return users, err
+}

@@ -2,13 +2,12 @@ package word
 
 import (
 	"backend/utils"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/xuri/excelize/v2"
 	"gorm.io/gorm"
-
-	"encoding/json"
 	"math"
 	"math/rand"
 	"net/http"
@@ -741,15 +740,166 @@ func EstimateVocabulary(list []Wordbook2) int {
 
 	return totalNum
 
-	/*
-		// 根据认识率估算每个层级的词汇量
-		knownNums := make([]float64, numLayers)
-		totalNum := 0.0
-		for i := 0; i < numLayers; i++ {
-			knownNums[i] = knownPers[i] * float64(boundaries[i+1]-boundaries[i]) * levelCoefficient[i]
-			totalNum += knownNums[i]
-		}
-		totalNum = math.Round(totalNum)
+}
 
-	*/
+type resCoefficientFourGrade struct {
+	Correlation  float64   `json:"correlation"`
+	FourGrades   []float64 `json:"four_grades"`
+	Vocabularies []float64 `json:"vocabularies"`
+}
+
+func GetCoefficientFourGrade(c *gin.Context) {
+	var (
+		msg string
+		err error
+	)
+
+	users, err := GetFourGradeAndVocabulary()
+	if err != nil {
+		msg = "获取数据失败"
+		z.Error(fmt.Sprintf("获取数据失败：%s %s", msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	var fourGrades []float64
+	var vocabularies []float64
+	for _, user := range users {
+		fourGrade, err := strconv.Atoi(user.FourGrade)
+		if err != nil {
+			continue
+		}
+
+		var array []int
+		err = json.Unmarshal([]byte(user.BasicVocabulary), &array)
+		if err != nil || len(array) == 0 {
+			continue
+		}
+
+		//	取array的平均值
+		var sum int
+		for _, v := range array {
+			sum += v
+		}
+		vocabulary := sum / len(array)
+
+		fourGrades = append(fourGrades, float64(fourGrade))
+		vocabularies = append(vocabularies, float64(vocabulary))
+
+	}
+
+	// 计算皮尔逊相关系数
+	correlation := pearsonCorrelation(fourGrades, vocabularies)
+
+	res := resCoefficientFourGrade{
+		Correlation:  correlation,
+		FourGrades:   fourGrades,
+		Vocabularies: vocabularies,
+	}
+
+	response.Success(c, res)
+	return
+}
+
+type resCoefficientSixGrade struct {
+	Correlation  float64   `json:"correlation"`
+	SixGrades    []float64 `json:"six_grades"`
+	Vocabularies []float64 `json:"vocabularies"`
+}
+
+func GetCoefficientSixGrade(c *gin.Context) {
+	var (
+		msg string
+		err error
+	)
+
+	users, err := GetSixGradeAndVocabulary()
+	if err != nil {
+		msg = "获取数据失败"
+		z.Error(fmt.Sprintf("获取数据失败：%s %s", msg, err))
+		response.Err(c, http.StatusOK, msg, nil)
+		return
+	}
+
+	var SixGrades []float64
+	var vocabularies []float64
+	for _, user := range users {
+		fourGrade, err := strconv.Atoi(user.SixGrade)
+		if err != nil {
+			continue
+		}
+
+		var array []int
+		err = json.Unmarshal([]byte(user.BasicVocabulary), &array)
+		if err != nil || len(array) == 0 {
+			continue
+		}
+
+		//	取array的平均值
+		var sum int
+		for _, v := range array {
+			sum += v
+		}
+		vocabulary := sum / len(array)
+
+		SixGrades = append(SixGrades, float64(fourGrade))
+		vocabularies = append(vocabularies, float64(vocabulary))
+
+	}
+
+	// 计算皮尔逊相关系数
+	correlation := pearsonCorrelation(SixGrades, vocabularies)
+
+	res := resCoefficientSixGrade{
+		Correlation:  correlation,
+		SixGrades:    SixGrades,
+		Vocabularies: vocabularies,
+	}
+
+	response.Success(c, res)
+	return
+}
+
+// 计算皮尔逊相关系数
+func pearsonCorrelation(x, y []float64) float64 {
+	n := len(x)
+
+	// 计算平均值
+	xMean := mean(x)
+	yMean := mean(y)
+
+	// 计算偏差乘积的和
+	deviationProductSum := 0.0
+	for i := 0; i < n; i++ {
+		deviationProductSum += (x[i] - xMean) * (y[i] - yMean)
+	}
+
+	// 计算偏差的平方和
+	xDeviationSum := deviationSum(x, xMean)
+	yDeviationSum := deviationSum(y, yMean)
+
+	// 计算皮尔逊相关系数
+	correlation := deviationProductSum / math.Sqrt(xDeviationSum*yDeviationSum)
+
+	return correlation
+}
+
+// 计算平均值
+func mean(data []float64) float64 {
+	sum := 0.0
+	n := len(data)
+	for _, val := range data {
+		sum += val
+	}
+	return sum / float64(n)
+}
+
+// 计算偏差的平方和
+func deviationSum(data []float64, mean float64) float64 {
+	sum := 0.0
+	for _, val := range data {
+		deviation := val - mean
+		sum += deviation * deviation
+	}
+	return sum
 }

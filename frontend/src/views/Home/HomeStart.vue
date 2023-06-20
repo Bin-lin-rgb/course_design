@@ -96,7 +96,7 @@
       <el-input
         v-model="data.basicVocabulary"
         maxlength="100"
-        placeholder="请填写你的个人介绍"
+        placeholder="您还没有最近的测试结果~"
         show-word-limit
         type="textarea"
         readonly="true"
