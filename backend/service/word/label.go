@@ -32,7 +32,7 @@ func GetWordList1(c *gin.Context) {
 
 	// 设置抽样参数
 	// 从多少个单词抽
-	totalWords := 6000
+	totalWords := 8000
 	// 分几层
 	numLayers := 10
 	// 抽出来多少个
